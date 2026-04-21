@@ -1,0 +1,14 @@
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\bin\Debug\net10.0\ConsoleCsharpTest.exe
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\bin\Debug\net10.0\ConsoleCsharpTest.deps.json
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\bin\Debug\net10.0\ConsoleCsharpTest.runtimeconfig.json
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\bin\Debug\net10.0\ConsoleCsharpTest.dll
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\bin\Debug\net10.0\ConsoleCsharpTest.pdb
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\obj\Debug\net10.0\ConsoleCsharpTest.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\obj\Debug\net10.0\ConsoleCsharpTest.AssemblyInfoInputs.cache
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\obj\Debug\net10.0\ConsoleCsharpTest.AssemblyInfo.cs
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\obj\Debug\net10.0\ConsoleCsharpTest.csproj.CoreCompileInputs.cache
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\obj\Debug\net10.0\ConsoleCsharpTest.dll
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\obj\Debug\net10.0\refint\ConsoleCsharpTest.dll
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\obj\Debug\net10.0\ConsoleCsharpTest.pdb
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\obj\Debug\net10.0\ConsoleCsharpTest.genruntimeconfig.cache
+C:\Users\Komp12\source\repos\ConsoleCsharpTest\ConsoleCsharpTest\obj\Debug\net10.0\ref\ConsoleCsharpTest.dll
