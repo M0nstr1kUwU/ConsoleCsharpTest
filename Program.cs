@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
@@ -21,8 +21,12 @@ internal class Program
                 "2. Шазам с числами\n" +
                 "3. Палиндром\n" +
                 "4. Максимальное, минимальное и среднее число из массива\n" +
-                "5. Сортировка пузырьком\n" +
-                "6. Перемножение и сложение массивов");
+                "5. Сортировка пузырьком int\n" +
+                "6. Перемножение и сложение массивов\n" +
+                "7. Сортировка массива string\n" +
+                "8. Сортировка массива string по lenght\n" +
+                "9. Проверка на одинаковые слова в массиве (без регистрозависимости)\n" +
+                "10. Шифр Цезаря\n");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -51,6 +55,21 @@ internal class Program
                 case 6:
                     fill_char('~', 30);
                     peremnogenie_clogenie();
+                    continue;
+                case 7:
+                    fill_char('~', 30);
+                    sort_bottle_string();
+                    continue;
+                case 8:
+                    fill_char('~', 30);
+                    sort_bottle_string_lenght();
+                    continue;
+                case 9:
+                    fill_char('~', 30);
+                    check_similar_word_in_array();
+                    continue;
+                case 10:
+                    fill_char('~', 30);
                     continue;
                 case 0:
                     return;
@@ -287,6 +306,149 @@ internal class Program
             {
                 Console.Write($"{arr4[i]}, ");
             }
+        }
+        fill_char('=', 30);
+    }
+
+    static void sort_bottle_string() 
+    {
+        Console.Write("Size: ");
+        int size = int.Parse(Console.ReadLine());
+        string[] arr = new string[size];
+        for (int i = 0; i < size; i++)
+        {
+            Console.Write($"{i + 1}. ");
+            arr[i] = Console.ReadLine();
+        }
+        Console.Write("[");
+        for (int i = 0; i < size; i++)
+        {
+            if (size - 1 == i)
+            {
+                Console.Write($"{arr[i]}]\n");
+            }
+            else
+            {
+                Console.Write($"{arr[i]}, ");
+            }
+        }
+
+        for (int i = 0; i < size - 1; i++)
+        {
+            for (int j = 0; j < size - 1 - i; j++)
+            {
+                if (arr[j].CompareTo(arr[j+1]) > 0)
+                {
+                    (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
+                }
+            }
+        }
+
+        Console.WriteLine("Sort array:");
+        Console.Write("[");
+        for (int i = 0; i < size; i++)
+        {
+            if (size - 1 == i)
+            {
+                Console.Write($"{arr[i]}]\n");
+            }
+            else
+            {
+                Console.Write($"{arr[i]}, ");
+            }
+        }
+        fill_char('=', 30);
+    }
+
+    static void sort_bottle_string_lenght()
+    {
+        Console.Write("Size: ");
+        int size = int.Parse(Console.ReadLine());
+        string[] arr = new string[size];
+        for (int i = 0; i < size; i++)
+        {
+            Console.Write($"{i + 1}. ");
+            arr[i] = Console.ReadLine();
+        }
+        Console.Write("[");
+        for (int i = 0; i < size; i++)
+        {
+            if (size - 1 == i)
+            {
+                Console.Write($"{arr[i]}]\n");
+            }
+            else
+            {
+                Console.Write($"{arr[i]}, ");
+            }
+        }
+
+        for (int i = 0; i < size - 1; i++)
+        {
+            for (int j = 0; j < size - 1 - i; j++)
+            {
+                if (arr[j].Length > arr[j + 1].Length)
+                {
+                    (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
+                }
+            }
+        }
+
+        Console.WriteLine("Sort array:");
+        Console.Write("[");
+        for (int i = 0; i < size; i++)
+        {
+            if (size - 1 == i)
+            {
+                Console.Write($"{arr[i]}]\n");
+            }
+            else
+            {
+                Console.Write($"{arr[i]}, ");
+            }
+        }
+        fill_char('=', 30);
+    }
+
+    static void check_similar_word_in_array()
+    {
+        Console.Write("Size: ");
+        int size = int.Parse(Console.ReadLine());
+        string[] arr = new string[size];
+        for (int i = 0; i < size; i++)
+        {
+            Console.Write($"{i + 1}. ");
+            arr[i] = Console.ReadLine();
+        }
+
+        int[] arr_similar = new int[size];
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                if (arr[i].ToLower() == arr[j].ToLower())
+                {
+                    arr_similar[i]++;
+                }
+            }
+        }
+
+        Console.WriteLine("Check array:");
+        Console.Write("[ ");
+        for (int i = 0; i < size; i++)
+        {
+            if (arr[i].Length > 0)
+            {
+                if (size - 1 == i)
+                {
+                    Console.Write($"[{arr[i]}: {arr_similar[i]}] ]\n");
+                }
+                else
+                {
+                    Console.Write($"[{arr[i]}: {arr_similar[i]}], ");
+                }
+            }
+            
         }
         fill_char('=', 30);
     }
