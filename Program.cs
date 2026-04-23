@@ -25,8 +25,15 @@ internal class Program
                 "6. Перемножение и сложение массивов\n" +
                 "7. Сортировка массива string\n" +
                 "8. Сортировка массива string по lenght\n" +
-                "9. Проверка на одинаковые слова в массиве (без регистрозависимости)\n" +
-                "10. Шифр Цезаря\n");
+                "9. Проверка на одинаковые слова в массиве без регистрозависимости\n" +
+                "10. Шифр Цезаря\n" +
+                "11. Проверка на существование символа в тексте\n" +
+                "12. Сравнение строк без регистрозависимости\n" +
+                "13. Ввод строки по буквам => целая строка\n" +
+                "14. Вывод каждого четного символа из строки\n" +   
+                "15. Проверка слова в заготовленном массиве\n" +
+                "16. Проверка аннограмы из всего массива\n" +
+                "17. Сортировка по последней букве\n");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -70,14 +77,54 @@ internal class Program
                     continue;
                 case 10:
                     fill_char('~', 30);
+                    crypto_cesar();
+                    continue;
+                case 11:
+                    fill_char('~', 30);
+                    check_char_in_text();
+                    continue;
+                case 12:
+                    fill_char('~', 30);
+                    check_text_a_similar_text();
+                    continue;
+                case 13:
+                    fill_char('~', 30);
+                    constructor_text_for_char();
+                    continue;
+                case 14:
+                    fill_char('~', 30);
+                    output_text_chet_char();
+                    continue;
+                case 15:
+                    fill_char('~', 30);
+                    check_word_in_array_50();
+                    continue;
+                case 16:
+                    fill_char('~', 30);
+                    check_annogram_in_array();
+                    continue;
+                case 17:
+                    fill_char('~', 30);
+                    sort_for_last_index();
                     continue;
                 case 0:
+                    fill_char('~', 30);
                     return;
                 default:
+                    fill_char('~', 30);
                     Console.WriteLine("Неверный выбор\n");
                     continue;
             }
         }
+    }
+
+    static void fill_char(char c, int num)
+    {
+        for (int i = 0; i < num; i++)
+        {
+            Console.Write(c);
+        }
+        Console.WriteLine("\n");
     }
 
     static void test1()
@@ -108,11 +155,11 @@ internal class Program
 
             if (input < secret_num)
             {
-                Console.WriteLine("Меньше");
+                Console.WriteLine("Больше");
             }
             else if (input > secret_num)
             {
-                Console.WriteLine("Больше");
+                Console.WriteLine("Меньше");
             }
             else
             {
@@ -120,7 +167,6 @@ internal class Program
                 break;
             }
         }
-        fill_char('=', 30);
     }
 
     static void test3()
@@ -148,31 +194,17 @@ internal class Program
         {
             Console.WriteLine("Не палиндром");
         }
-        fill_char('=', 30);
     }
-
-    //static void check_password(){
-    //    Console.Write("Password: ");
-    //    string? password = Console.ReadLine();
-
-    //    string current_password = "qwerty1234";
-
-    //    if (string.IsNullOrEmpty(password))
-    //    {
-    //        Console.WriteLine("Строка пустая");
-    //        return;
-    //    }
-    //}
 
     static void sort_bottle()
     {
         Console.Write("Size: ");
-        int size = int.Parse(Console.ReadLine());
+        int size = int.Parse(Console.ReadLine() ?? "");
         int[] arr = new int[size];
         for (int i = 0; i < size; i++)
         {
             Console.Write($"{i + 1}. ");
-            arr[i] = int.Parse(Console.ReadLine());
+            arr[i] = int.Parse(Console.ReadLine() ?? "");
         }
         Console.Write("[");
         for (int i = 0; i < size; i++)
@@ -211,13 +243,12 @@ internal class Program
                 Console.Write($"{arr[i]}, ");
             }
         }
-        fill_char('=', 30);
     }
 
     static void sort_max_in_arr_sr()
     {
         Console.Write("Size: ");
-        int size = int.Parse(Console.ReadLine());
+        int size = int.Parse(Console.ReadLine() ?? "");
         if (size == 0)
         {
             Console.WriteLine("Size can`t be null!");
@@ -228,7 +259,7 @@ internal class Program
         for (int i = 0; i < size; i++)
         {
             Console.Write($"{i + 1}. ");
-            arr[i] = int.Parse(Console.ReadLine());
+            arr[i] = int.Parse(Console.ReadLine() ?? "");
             sum += arr[i];
         }
         int max_num = -9999;
@@ -247,13 +278,12 @@ internal class Program
         Console.WriteLine($"Наибольшее: {max_num}");
         Console.WriteLine($"Наименьшее: {min_num}");
         Console.WriteLine($"Среднее арифметическое: {(float)sum / (float)size}");
-        fill_char('=', 30);
     }
 
     static void peremnogenie_clogenie()
     {
         Console.Write("Size: ");
-        int size = int.Parse(Console.ReadLine());
+        int size = int.Parse(Console.ReadLine() ?? "");
         if (size == 0)
         {
             Console.WriteLine("Size can`t be null!");
@@ -264,14 +294,14 @@ internal class Program
         for (int i = 0; i < size; i++)
         {
             Console.Write($"{i + 1}. ");
-            arr1[i] = int.Parse(Console.ReadLine());
+            arr1[i] = int.Parse(Console.ReadLine() ?? "");
         }
         int[] arr2 = new int[size];
         Console.WriteLine("Array 2:");
         for (int i = 0; i < size; i++)
         {
             Console.Write($"{i + 1}. ");
-            arr2[i] = int.Parse(Console.ReadLine());
+            arr2[i] = int.Parse(Console.ReadLine() ?? "");
         }
         int[] arr3 = new int[size];
         for (int i = 0; i < size; i++)
@@ -307,18 +337,17 @@ internal class Program
                 Console.Write($"{arr4[i]}, ");
             }
         }
-        fill_char('=', 30);
     }
 
     static void sort_bottle_string() 
     {
         Console.Write("Size: ");
-        int size = int.Parse(Console.ReadLine());
+        int size = int.Parse(Console.ReadLine() ?? "");
         string[] arr = new string[size];
         for (int i = 0; i < size; i++)
         {
             Console.Write($"{i + 1}. ");
-            arr[i] = Console.ReadLine();
+            arr[i] = Console.ReadLine() ?? "";
         }
         Console.Write("[");
         for (int i = 0; i < size; i++)
@@ -357,18 +386,17 @@ internal class Program
                 Console.Write($"{arr[i]}, ");
             }
         }
-        fill_char('=', 30);
     }
 
     static void sort_bottle_string_lenght()
     {
         Console.Write("Size: ");
-        int size = int.Parse(Console.ReadLine());
+        int size = int.Parse(Console.ReadLine() ?? "");
         string[] arr = new string[size];
         for (int i = 0; i < size; i++)
         {
             Console.Write($"{i + 1}. ");
-            arr[i] = Console.ReadLine();
+            arr[i] = Console.ReadLine() ?? "";
         }
         Console.Write("[");
         for (int i = 0; i < size; i++)
@@ -407,18 +435,17 @@ internal class Program
                 Console.Write($"{arr[i]}, ");
             }
         }
-        fill_char('=', 30);
     }
 
     static void check_similar_word_in_array()
     {
         Console.Write("Size: ");
-        int size = int.Parse(Console.ReadLine());
+        int size = int.Parse(Console.ReadLine() ?? "");
         string[] arr = new string[size];
         for (int i = 0; i < size; i++)
         {
             Console.Write($"{i + 1}. ");
-            arr[i] = Console.ReadLine();
+            arr[i] = Console.ReadLine() ?? "";
         }
 
         int[] arr_similar = new int[size];
@@ -450,15 +477,160 @@ internal class Program
             }
             
         }
-        fill_char('=', 30);
     }
 
-    static void fill_char(char c, int num)
+    static void crypto_cesar()
     {
-        for (int i = 0; i < num; i++)
+        Console.Write("Текст: ");
+        string text = Console.ReadLine() ?? "";
+        Console.Write("Сдвиг: ");
+        int s = Convert.ToInt32(Console.ReadLine());
+        string result = "";
+
+        for (int i = 0; i < text.Length; i++)
         {
-            Console.Write(c);
+            char c = text[i];
+
+            if (c >= 'a' && c <= 'z')
+            {
+                int ns = s % 26;
+                int cd = c + ns;
+                if (cd > 'z') cd -= 26;
+                if (cd < 'a') cd += 26;
+                result += (char)cd;
+            }
+            else if (c >= 'A' && c <= 'Z')
+            {
+                int ns = s % 26;
+                int cd = c + ns;
+                if (cd > 'Z') cd -= 26;
+                if (cd < 'A') cd += 26;
+                result += (char)cd;
+            }
+            else if (c >= 'а' && c <= 'я')
+            {
+                int ns = s % 32;
+                int cd = c + ns;
+                if (cd > 'я') cd -= 32;
+                if (cd < 'а') cd += 32;
+                result += (char)cd;
+            }
+            else if (c >= 'А' && c <= 'Я')
+            {
+                int ns = s % 32;
+                int cd = c + ns;
+                if (cd > 'Я') cd -= 32;
+                if (cd < 'А') cd += 32;
+                result += (char)cd;
+            }
+            else
+            {
+                result += c;
+            }
         }
-        Console.WriteLine("\n");
+        Console.WriteLine($"Результат: {result}");
+    }
+
+    static void check_char_in_text()
+    {
+        Console.Write("Символ: ");
+        string c = Console.ReadLine() ?? "";
+        Console.Write("Текст: ");
+        string text = Console.ReadLine() ?? "";
+        if(c == null || text == null)
+        {
+            Console.WriteLine("Текст или символ не могут быть пустыми!");
+            return;
+        }
+        int result = 0;
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (text[i].ToString().ToLower() == char.Parse(c).ToString().ToLower())
+            {
+                result++;
+            }
+        }
+        Console.WriteLine($"Результат: {result}");
+    }
+
+    static void check_text_a_similar_text()
+    {
+        Console.Write("Текст: ");
+        string text1 = Console.ReadLine() ?? "";
+        Console.Write("Текст: ");
+        string text2 = Console.ReadLine() ?? "";
+        if (text1 == null || text2 == null)
+        {
+            Console.WriteLine("Тексты не могут быть пустыми!");
+            return;
+        }
+        if (text1.ToLower() == text2.ToLower())
+        {
+            Console.WriteLine("Строки одинаковы!");    
+        }
+        else
+        {
+            Console.WriteLine("Строки не одинаковы!");
+        }
+    }
+
+    static void constructor_text_for_char()
+    {
+        Console.Write("Size: ");
+        int size = int.Parse(Console.ReadLine() ?? "");
+        string[] arr = new string[size];
+        for (int i = 0; i < size; i++)
+        {
+            Console.Write($"{i + 1}. ");
+            arr[i] = Console.ReadLine() ?? "";
+            if (arr[i] == null)
+            {
+                arr[i] = "*";
+            }
+        }
+        Console.Write("Строка: ");
+        for (int i = 0; i < size; i++)
+        {
+            Console.Write($"{arr[i]}");
+        }
+        Console.Write("\n");
+    }
+
+    static void output_text_chet_char()
+    {
+        Console.Write("Текст: ");
+        string text = Console.ReadLine() ?? "";
+        if (text == null)
+        {
+            Console.WriteLine("Текст не может быть пустым!");
+            return;
+        }
+        Console.Write("Результат: ");
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (i % 2 == 0)
+            {
+                Console.Write(text[i]);
+            }
+        }
+        Console.Write("\n");
+    }
+
+    static void check_word_in_array_50()
+    {
+        string[] arr =
+        {
+           
+        };
+    }
+
+    static void check_annogram_in_array()
+    {
+
+    }
+
+    static void sort_for_last_index()
+    {
+
     }
 }
