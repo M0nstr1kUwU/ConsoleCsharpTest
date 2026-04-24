@@ -30,10 +30,12 @@ internal class Program
                 "11. Проверка на существование символа в тексте\n" +
                 "12. Сравнение строк без регистрозависимости\n" +
                 "13. Ввод строки по буквам => целая строка\n" +
-                "14. Вывод каждого четного символа из строки\n" +   
+                "14. Вывод каждого четного символа из строки\n" +
                 "15. Проверка слова в заготовленном массиве\n" +
                 "16. Проверка аннограмы из всего массива\n" +
-                "17. Сортировка по последней букве\n");
+                "17. Сортировка по последней букве\n" +
+                "18. Фиббоначи\n" +
+                "19. Площадь круга\n");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -106,6 +108,15 @@ internal class Program
                 case 17:
                     fill_char('~', 30);
                     sort_for_last_index();
+                    continue;
+                case 18:
+                    fill_char('~', 30);
+                    int a = int.Parse(Console.ReadLine() ?? "");
+                    fibonachi(a);
+                    continue;
+                case 19:
+                    fill_char('~', 30);
+                    s_dev();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -339,7 +350,7 @@ internal class Program
         }
     }
 
-    static void sort_bottle_string() 
+    static void sort_bottle_string()
     {
         Console.Write("Size: ");
         int size = int.Parse(Console.ReadLine() ?? "");
@@ -366,7 +377,7 @@ internal class Program
         {
             for (int j = 0; j < size - 1 - i; j++)
             {
-                if (arr[j].CompareTo(arr[j+1]) > 0)
+                if (arr[j].CompareTo(arr[j + 1]) > 0)
                 {
                     (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
                 }
@@ -475,7 +486,7 @@ internal class Program
                     Console.Write($"[{arr[i]}: {arr_similar[i]}], ");
                 }
             }
-            
+
         }
     }
 
@@ -537,7 +548,7 @@ internal class Program
         string c = Console.ReadLine() ?? "";
         Console.Write("Текст: ");
         string text = Console.ReadLine() ?? "";
-        if(c == null || text == null)
+        if (c == null || text == null)
         {
             Console.WriteLine("Текст или символ не могут быть пустыми!");
             return;
@@ -566,7 +577,7 @@ internal class Program
         }
         if (text1.ToLower() == text2.ToLower())
         {
-            Console.WriteLine("Строки одинаковы!");    
+            Console.WriteLine("Строки одинаковы!");
         }
         else
         {
@@ -620,7 +631,7 @@ internal class Program
     {
         string[] arr =
         {
-           
+
         };
     }
 
@@ -633,4 +644,25 @@ internal class Program
     {
 
     }
+
+    static int fibonachi(int a)
+    {
+        if (a <= 1)
+        {
+            return a;
+        }
+        else
+        {
+            return fibonachi(a - 1) + fibonachi(a - 2);
+        }
+    }
+
+    static void s_dev()
+    {
+        Console.Write("Радиус: ");
+        int r = int.Parse(Console.ReadLine() ?? "");
+        Console.WriteLine($"Площадь: {Math.Round(Math.PI * Math.Pow(r, 2))}");
+    }
+
+
 }
