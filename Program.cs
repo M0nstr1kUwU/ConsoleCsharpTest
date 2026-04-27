@@ -35,7 +35,10 @@ internal class Program
                 "16. Проверка аннограмы из всего массива\n" +
                 "17. Сортировка по последней букве\n" +
                 "18. Фиббоначи\n" +
-                "19. Площадь круга\n");
+                "19. Площадь круга\n" +
+                "20. Факториал\n" +
+                "21. Поиск наибольшего префикса\n" +
+                "22. Перевёрнутый массив функцией\n");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -117,6 +120,18 @@ internal class Program
                 case 19:
                     fill_char('~', 30);
                     s_dev();
+                    continue;
+                case 20:
+                    fill_char('~', 30);
+                    factorial();
+                    continue;
+                case 21:
+                    fill_char('~', 30);
+                    seyau();
+                    continue;
+                case 22:
+                    fill_char('~', 30);
+                    perevertish();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -660,9 +675,83 @@ internal class Program
     static void s_dev()
     {
         Console.Write("Радиус: ");
-        int r = int.Parse(Console.ReadLine() ?? "");
-        Console.WriteLine($"Площадь: {Math.Round(Math.PI * Math.Pow(r, 2))}");
+        double r = double.Parse(Console.ReadLine() ?? "");
+        Console.WriteLine($"Площадь: {Math.PI * Math.Pow(r, 2)}");
     }
 
+    static void factorial()
+    {
+        Console.Write("Число: ");
+        int n = int.Parse(Console.ReadLine() ?? "");
+        long result = 1;
+        for (int i = 1; i <= n; i++)
+        {
+            result *= i;
+        }
+        Console.WriteLine($"Факториал {n}! = {result}");
+    }
 
+    static void seyau()
+    {
+        Console.Write("Size: ");
+        int size = int.Parse(Console.ReadLine() ?? "");
+
+        string[] str = new string[size];
+        for (int i = 0; i < size; i++)
+        {
+            Console.Write($"{i+1}. ");
+            str[i] = Console.ReadLine() ?? "";
+        }
+
+        if (str.Length == 0)
+        {
+            Console.WriteLine("Не разберу я твой префикс, потому что ты овощ, что ты вводишь вообще?! venom");
+            return;
+        }
+
+        string prefix = str[0];
+        for (int i = 1; i < str.Length; i++)
+        {
+            while (!str[i].StartsWith(prefix))
+            {
+                prefix = prefix.Substring(0, prefix.Length - 1);
+                if (string.IsNullOrEmpty(prefix))
+                {
+                    Console.WriteLine("Нет тут твоего префикса общего");
+                    return;
+                }
+            }
+        }
+        Console.WriteLine($"Результат: '{prefix}'");
+    }
+
+    static void perevertish()
+    {
+        Console.Write("Size: ");
+        int size = int.Parse(Console.ReadLine() ?? "");
+
+        int[] str = new int[size];
+        for (int i = 0; i < size; i++)
+        {
+            Console.Write($"{i + 1}. ");
+            str[i] = int.Parse(Console.ReadLine() ?? "");
+        }
+        int[] str_pere = new int[size];
+        for (int i = 0;i < size; i++)
+        {
+            str_pere[i] = str[size - 1 - i];
+        }
+        Console.Write($"Результат: [");
+        for (int i = 0; i < size; i++)
+        {
+            if (i < size - 1)
+            {
+                Console.Write($"{str_pere[i]}, ");
+            }
+            else
+            {
+                Console.Write($"{str_pere[i]}]\n");
+            }
+        }
+    }
 }
