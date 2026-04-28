@@ -38,7 +38,9 @@ internal class Program
                 "19. Площадь круга\n" +
                 "20. Факториал\n" +
                 "21. Поиск наибольшего префикса\n" +
-                "22. Перевёрнутый массив функцией\n");
+                "22. Перевёрнутый массив функцией\n" +
+                "23. Вывод только четных значений массива через функцию\n" +
+                "24. Сортировка массива по кол-ву делителей");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -132,6 +134,14 @@ internal class Program
                 case 22:
                     fill_char('~', 30);
                     perevertish();
+                    continue;
+                case 23:
+                    fill_char('~', 30);
+                    output_chet_num_array();
+                    continue;
+                case 24:
+                    fill_char('~', 30);
+                    sort_array_for_count_del();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -752,6 +762,92 @@ internal class Program
             {
                 Console.Write($"{str_pere[i]}]\n");
             }
+        }
+    }
+
+    static void output_chet_num_array()
+    {
+        Console.Write("Size: ");
+        int size = int.Parse(Console.ReadLine() ?? "");
+
+        int[] num = new int[size];
+        for (int i = 0; i < size; i++)
+        {
+            Console.Write($"{i + 1}. ");
+            num[i] = int.Parse(Console.ReadLine() ?? "");
+        }
+
+        for (int i = 0; i < size ; i++)
+        {
+            if (num[i] % 2 == 0)
+            {
+                Console.Write($"{num[i]}");
+            }
+        }
+    }
+
+    static void sort_array_for_count_del()
+    {
+        Console.Write("Size: ");
+        int size = int.Parse(Console.ReadLine() ?? "");
+        if (size <= 0) return;
+
+        int[] arr = new int[size];
+        for (int i = 0; i < size; i++)
+        {
+            Console.Write($"{i + 1}. ");
+            arr[i] = int.Parse(Console.ReadLine() ?? "");
+        }
+
+        Console.Write("Массив: [");
+        for (int i = 0; i < size; i++)
+        {
+            if (i == size - 1)
+                Console.Write($"{arr[i]}]\n");
+            else
+                Console.Write($"{arr[i]}, ");
+        }
+
+        static int CountDivisors(int n)
+        {
+            n = Math.Abs(n);
+            if (n == 0) return 0;
+            int count = 0;
+            for (int i = 1; i * i <= n; i++)
+            {
+                if (n % i == 0)
+                {
+                    count++;
+                    if (i != n / i) count++;
+                }
+            }
+            return count;
+        }
+
+        int[] dc = new int[size];
+        for (int i = 0; i < size; i++)
+            dc[i] = CountDivisors(arr[i]);
+
+        for (int i = 0; i < size - 1; i++)
+        {
+            for (int j = 0; j < size - 1 - i; j++)
+            {
+                if (dc[j] > dc[j + 1] ||
+                    (dc[j] == dc[j + 1] && arr[j] > arr[j + 1]))
+                {
+                    (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
+                    (dc[j], dc[j + 1]) = (dc[j + 1], dc[j]);
+                }
+            }
+        }
+
+        Console.Write("Результат: [");
+        for (int i = 0; i < size; i++)
+        {
+            if (i == size - 1)
+                Console.Write($"{arr[i]}]\n");
+            else
+                Console.Write($"{arr[i]}, ");
         }
     }
 }
