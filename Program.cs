@@ -40,7 +40,10 @@ internal class Program
                 "21. Поиск наибольшего префикса\n" +
                 "22. Перевёрнутый массив функцией\n" +
                 "23. Вывод только четных значений массива через функцию\n" +
-                "24. Сортировка массива по кол-ву делителей");
+                "24. Сортировка массива по кол-ву делителей\n" +
+                "25. Сортировку пузырьком двумерного массива\n" +
+                "26. Сумма главной диагонали матрицы\n" +
+                "27. Реверс каждой строки матрицы\n");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -142,6 +145,18 @@ internal class Program
                 case 24:
                     fill_char('~', 30);
                     sort_array_for_count_del();
+                    continue;
+                case 25:
+                    fill_char('~', 30);
+                    sort_bottle_2_array();
+                    continue;
+                case 26:
+                    fill_char('~', 30);
+                    sum_main_diagonal_matrix();
+                    continue;
+                case 27:
+                    fill_char('~', 30);
+                    reverse_str_matrix();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -848,6 +863,208 @@ internal class Program
                 Console.Write($"{arr[i]}]\n");
             else
                 Console.Write($"{arr[i]}, ");
+        }
+    }
+
+    static void sort_bottle_2_array()
+    {
+        Console.Write("Столбцов: ");
+        int str = int.Parse(Console.ReadLine() ?? "");
+        Console.Write("Строк: ");
+        int stb = int.Parse(Console.ReadLine() ?? "");
+
+        int[,] arr = new int[str, stb];
+
+        for (int i = 0; i < str ; i++)
+        {
+            for (int j = 0; j < stb ; j++)
+            {
+                Console.Write($"{i + 1}.{j + 1}: ");
+                arr[i, j] = int.Parse(Console.ReadLine() ?? "");
+            }
+        }
+
+        Console.WriteLine("Current array: ");
+        for (int i = 0; i < str; i++)
+        {
+            Console.Write("{ ");
+            for (int j = 0; j < stb; j++)
+            {
+                if (j < stb - 1)
+                {
+                    Console.Write($"{arr[i, j]}, ");
+                }
+                else
+                {
+                    Console.Write($"{arr[i, j]} ");
+                }
+            }
+            Console.Write("}\n");
+        }
+
+        int f = str * stb;
+        int[] arr1 = new int[f];
+        int ix = 0;
+
+        foreach (int x in arr)
+        {
+            arr1[ix++] = x;
+        }
+            
+        for (int i = 0; i < f - 1; i++)
+        {
+            for (int j = 0; j < f - 1 - i; j++)
+            {
+                if (arr1[j] > arr1[j + 1])
+                {
+                    int temp = arr1[j];
+                    arr1[j] = arr1[j + 1];
+                    arr1[j + 1] = temp;
+                }
+            }
+                            
+        }
+            
+        ix = 0;
+        for (int i = 0; i < str; i++)
+        {
+            for (int j = 0; j < stb; j++)
+            {
+                arr[i, j] = arr1[ix++];
+            }
+        }
+
+        Console.WriteLine("Sort array: ");
+        for (int i = 0; i < str; i++)
+        {
+            Console.Write("{ ");
+            for (int j = 0; j < stb; j++)
+            {
+                if (j < stb - 1)
+                {
+                    Console.Write($"{arr[i, j]}, ");
+                }
+                else
+                {
+                    Console.Write($"{arr[i, j]} ");
+                }
+            }
+            Console.Write("}\n");
+        }
+    }
+
+    static void sum_main_diagonal_matrix()
+    {
+        Console.Write("Столбцов: ");
+        int str = int.Parse(Console.ReadLine() ?? "");
+        Console.Write("Строк: ");
+        int stb = int.Parse(Console.ReadLine() ?? "");
+
+        int[,] arr = new int[str, stb];
+        int sum = 0;
+
+        for (int i = 0; i < str; i++)
+        {
+            for (int j = 0; j < stb; j++)
+            {
+                Console.Write($"{i + 1}.{j + 1}: ");
+                arr[i, j] = int.Parse(Console.ReadLine() ?? "");
+            }
+        }
+
+        Console.WriteLine("Array: ");
+        for (int i = 0; i < str; i++)
+        {
+            Console.Write("{ ");
+            for (int j = 0; j < stb; j++)
+            {
+                if (j < stb - 1)
+                {
+                    Console.Write($"{arr[i, j]}, ");
+                }
+                else
+                {
+                    Console.Write($"{arr[i, j]} ");
+                }
+            }
+            Console.Write("}\n");
+        }
+
+        for (int i = 0; i < str; i++)
+        {
+            for (int j = 0; j < stb; j++)
+            {
+                if (i == j)
+                {
+                    sum += arr[i, j];
+                }
+            }
+        }
+        Console.WriteLine($"Сумма: {sum}");
+    }
+
+    static void reverse_str_matrix()
+    {
+        Console.Write("Столбцов: ");
+        int str = int.Parse(Console.ReadLine() ?? "");
+        Console.Write("Строк: ");
+        int stb = int.Parse(Console.ReadLine() ?? "");
+
+        int[,] arr = new int[str, stb];
+
+        for (int i = 0; i < str; i++)
+        {
+            for (int j = 0; j < stb; j++)
+            {
+                Console.Write($"{i + 1}.{j + 1}: ");
+                arr[i, j] = int.Parse(Console.ReadLine() ?? "");
+            }
+        }
+
+        Console.WriteLine("Current array: ");
+        for (int i = 0; i < str; i++)
+        {
+            Console.Write("{ ");
+            for (int j = 0; j < stb; j++)
+            {
+                if (j < stb - 1)
+                {
+                    Console.Write($"{arr[i, j]}, ");
+                }
+                else
+                {
+                    Console.Write($"{arr[i, j]} ");
+                }
+            }
+            Console.Write("}\n");
+        }
+
+        int[,] arr_rev = new int[str, stb];
+
+        for (int i = 0; i < str ; i++)
+        {
+            for (int j = 0; j < stb; j++)
+            {
+                arr_rev[i, j] = arr[i, stb - 1 - j];
+            }
+        }
+
+        Console.WriteLine("Reverse array: ");
+        for (int i = 0; i < str; i++)
+        {
+            Console.Write("{ ");
+            for (int j = 0; j < stb; j++)
+            {
+                if (j < stb - 1)
+                {
+                    Console.Write($"{arr_rev[i, j]}, ");
+                }
+                else
+                {
+                    Console.Write($"{arr_rev[i, j]} ");
+                }
+            }
+            Console.Write("}\n");
         }
     }
 }
