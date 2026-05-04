@@ -3,6 +3,97 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
 
+class Student
+{
+    public string name;
+    public string group;
+    public string birthDate;
+
+    public Student(string name, string group, string birthDate)
+    {
+        this.name = name;
+        this.group = group;
+        this.birthDate = birthDate;
+    }
+
+    public int GetAge(string currentDate)
+    {
+        string[] birthParts = birthDate.Split('.');
+        int birthDay = int.Parse(birthParts[0]);
+        int birthMonth = int.Parse(birthParts[1]);
+        int birthYear = int.Parse(birthParts[2]);
+
+        string[] currentParts = currentDate.Split('.');
+        int currentDay = int.Parse(currentParts[0]);
+        int currentMonth = int.Parse(currentParts[1]);
+        int currentYear = int.Parse(currentParts[2]);
+
+        int age = currentYear - birthYear;
+
+        if (currentMonth < birthMonth ||
+            (currentMonth == birthMonth && currentDay < birthDay))
+        {
+            age--;
+        }
+
+        return age;
+    }
+}
+
+class Bank
+{
+    private string pinCode;
+    private decimal money;
+
+    public Bank(string pinCode, decimal initialMoney = 0)
+    {
+        this.pinCode = pinCode;
+        this.money = initialMoney;
+    }
+
+    public void Deposit(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            return;
+        }
+        money += amount;
+        Console.WriteLine($"Счёт пополнен на {amount} руб. Текущий баланс: {money} руб");
+    }
+
+    public bool Withdraw(decimal amount, string pin)
+    {
+        if (pin != pinCode)
+        {
+            Console.WriteLine("Неверный пин-код!");
+            return false;
+        }
+        if (amount <= 0)
+        {
+            Console.WriteLine("Сумма снятия должна быть +");
+            return false;
+        }
+        if (amount > money)
+        {
+            Console.WriteLine("Недостаточно средств на счёте");
+            return false;
+        }
+        money -= amount;
+        Console.WriteLine($"Снято {amount} руб. Остаток: {money} руб");
+        return true;
+    }
+
+    public void ShowBalance(string pin)
+    {
+        if (pin != pinCode)
+        {
+            Console.WriteLine("Неверный пин-код!");
+            return;
+        }
+        Console.WriteLine($"Баланс счёта: {money} руб");
+    }
+}
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -43,7 +134,9 @@ internal class Program
                 "24. Сортировка массива по кол-ву делителей\n" +
                 "25. Сортировку пузырьком двумерного массива\n" +
                 "26. Сумма главной диагонали матрицы\n" +
-                "27. Реверс каждой строки матрицы\n");
+                "27. Реверс каждой строки матрицы\n" +
+                "28. Вычисление возраста студента\n" +
+                "29. Банк Демоверсия (full в стране Россия)");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -158,6 +251,14 @@ internal class Program
                     fill_char('~', 30);
                     reverse_str_matrix();
                     continue;
+                case 28:
+                    fill_char('~', 30);
+                    solve_student_age();
+                    continue;
+                case 29:
+                    fill_char('~', 30);
+                    bankDemo();
+                    continue;
                 case 0:
                     fill_char('~', 30);
                     return;
@@ -193,6 +294,13 @@ internal class Program
             Console.WriteLine($"Сложение {i + 1}: {c}");
         }
         Console.WriteLine($"Result: {c}");
+    }
+
+    static void solve_student_age()
+    {
+        Student s = new Student("Иван Иванович", "ГД-2", "04.12.2008");
+        string today = "04.05.2028";
+        Console.WriteLine($"Возраст: {s.GetAge(today)}");
     }
 
     static void test2()
@@ -1065,6 +1173,52 @@ internal class Program
                 }
             }
             Console.Write("}\n");
+        }
+    }
+
+    static void bankDemo()
+    {
+        Console.Write("Установите пин-код (цифры): ");
+        string pin = Console.ReadLine() ?? "0000";
+        Console.Write("Начальный взнос: ");
+        decimal init = decimal.Parse(Console.ReadLine() ?? "0");
+
+        Bank account = new Bank(pin, init);
+
+        while (true)
+        {
+            Console.WriteLine("\n--- БАНК ---\n" +
+            "1. Пополнить счёт\n" +
+            "2. Снять деньги\n" + 
+            "3. Показать баланс\n" +
+            "Выбор: ");
+
+            string choice = Console.ReadLine() ?? "0";
+
+            if (choice == "0") break;
+
+            switch (choice)
+            {
+                case "1":
+                    Console.Write("Сумма пополнения: ");
+                    decimal dep = decimal.Parse(Console.ReadLine() ?? "0");
+                    account.Deposit(dep);
+                    break;
+                case "2":
+                    Console.Write("Сумма снятия: ");
+                    decimal wit = decimal.Parse(Console.ReadLine() ?? "0");
+                    Console.Write("Пин-код: ");
+                    string p = Console.ReadLine() ?? "";
+                    account.Withdraw(wit, p);
+                    break;
+                case "3":
+                    Console.Write("Пин-код: ");
+                    string p2 = Console.ReadLine() ?? "";
+                    account.ShowBalance(p2);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
