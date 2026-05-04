@@ -42,11 +42,13 @@ class Student
 
 class Bank
 {
+    private string name;
     private string pinCode;
     private decimal money;
 
-    public Bank(string pinCode, decimal initialMoney = 0)
+    public Bank(string name, string pinCode, decimal initialMoney = 0)
     {
+        this.name = name;
         this.pinCode = pinCode;
         this.money = initialMoney;
     }
@@ -1178,16 +1180,18 @@ internal class Program
 
     static void bankDemo()
     {
+        Console.Write("Пользователь: ");
+        string name = Console.ReadLine() ?? "Unknown";
         Console.Write("Установите пин-код (цифры): ");
         string pin = Console.ReadLine() ?? "0000";
         Console.Write("Начальный взнос: ");
         decimal init = decimal.Parse(Console.ReadLine() ?? "0");
 
-        Bank account = new Bank(pin, init);
+        Bank account = new Bank(name, pin, init);
 
         while (true)
         {
-            Console.WriteLine("\n--- БАНК ---\n" +
+            Console.WriteLine($"\n--- БАНК: {name} ---\n" +
             "1. Пополнить счёт\n" +
             "2. Снять деньги\n" + 
             "3. Показать баланс\n" +
@@ -1196,6 +1200,14 @@ internal class Program
             string choice = Console.ReadLine() ?? "0";
 
             if (choice == "0") break;
+
+            if (name == "Unknown" || name == string.Empty)
+            {
+                Console.WriteLine("Сначала введите имя пользвателя!");
+                Console.Write("Пользователь: ");
+                name = Console.ReadLine() ?? "Unknown";
+                continue;
+            }
 
             switch (choice)
             {
