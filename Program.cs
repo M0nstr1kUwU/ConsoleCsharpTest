@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
@@ -96,6 +97,100 @@ class Bank
     }
 }
 
+class Matrix
+{
+    private int[,] matrix;
+    public int R { get; }
+    public int C { get; }
+
+    public Matrix(int r, int c)
+    {
+        R = r;
+        C = c;
+        matrix = new int[r, c];
+    }
+
+    public int this[int i, int j]
+    {
+        get { return matrix[i, j]; }
+        set { matrix[i, j] = value; }
+    }
+
+    public static Matrix sum(Matrix a, Matrix b)
+    {
+        if (a.R != b.R || a.C != b.C)
+        {
+            throw new Exception("Размеры не совпадают, не могу посчитать :(");
+        }
+        
+
+        Matrix result = new Matrix(a.R, a.C);
+        for (int i = 0; i < a.R; i++)
+            for (int j = 0; j < a.C; j++)
+                result[i, j] = a[i, j] + b[i, j];
+        return result;
+    }
+
+    public void p()
+    {
+        Console.WriteLine("Result:");
+        for (int i = 0; i < C; i++)
+        {
+            Console.Write("{ ");
+            for (int j = 0; j < C; j++)
+            {
+                if (j < C - 1)
+                {
+                    Console.Write($"{matrix[i, j]}, ");
+                }
+                else
+                {
+                    Console.Write($"{matrix[i, j]} ");
+                }
+            }
+            Console.Write("}\n");
+        }
+    }
+}
+
+class Vehicle
+{
+    public int Speed { get; set; }
+    public int Distance { get; set; }
+    public int Time { get; set; }
+
+    public Vehicle(int speed, int time, int distance = 0) 
+    {
+        Speed = speed;
+        Distance = distance;
+        Time = time;
+    }
+    public virtual void move(Vehicle f)
+    {
+        f.Distance = f.Speed * f.Time;
+        Console.WriteLine($"Distance: {f.Distance}, (Speed: {f.Speed}, Time: {f.Time})");
+    }
+}
+
+class Bicycle : Vehicle
+{
+    public Bicycle(int speed, int time, int distance = 0) : base(speed + 1, time + 1, distance + 1){}
+    public override void move(Vehicle f)
+    {
+        base.move(f);
+    }
+}
+
+class Car : Vehicle
+{
+    public Car(int speed, int time, int distance = 0) : base(speed + 10, time, distance){}
+
+    public override void move(Vehicle f)
+    {
+        base.move(f);
+    }
+}
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -138,7 +233,9 @@ internal class Program
                 "26. Сумма главной диагонали матрицы\n" +
                 "27. Реверс каждой строки матрицы\n" +
                 "28. Вычисление возраста студента\n" +
-                "29. Банк Демоверсия (full в стране Россия)");
+                "29. Банк Демоверсия (full в стране Россия)\n" +
+                "30. Сумма матриц (class)\n" +
+                "31. Родительские и дочерние классы\n");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -260,6 +357,14 @@ internal class Program
                 case 29:
                     fill_char('~', 30);
                     bankDemo();
+                    continue;
+                case 30:
+                    fill_char('~', 30);
+                    sum_matrix_class();
+                    continue;
+                case 31:
+                    fill_char('~', 30);
+                    nafdkodf();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -1193,7 +1298,7 @@ internal class Program
         {
             Console.WriteLine($"\n--- БАНК: {name} ---\n" +
             "1. Пополнить счёт\n" +
-            "2. Снять деньги\n" + 
+            "2. Снять деньги\n" +
             "3. Показать баланс\n" +
             "Выбор: ");
 
@@ -1229,6 +1334,72 @@ internal class Program
                     account.ShowBalance(p2);
                     break;
                 default:
+                    break;
+            }
+        }
+    }
+
+    static void sum_matrix_class()
+    {
+        Console.Write("Столбцов: ");
+        int c = int.Parse(Console.ReadLine() ?? "");
+        Console.Write("Строк: ");
+        int r = int.Parse(Console.ReadLine() ?? "");
+
+        Matrix A = new Matrix(r, c);
+        Matrix B = new Matrix(r, c);
+
+        Console.WriteLine("A Matrix: ");
+        for (int i = 0; i < r; i++)
+        {
+            for (int j = 0; j < c; j++)
+            {
+                Console.Write($"{i+1}.{j+1}: ");
+                A[i, j] = int.Parse(Console.ReadLine() ?? "");
+            }
+        }
+
+        Console.WriteLine("B Matrix:");
+        for (int i = 0; i < r; i++)
+        {
+            for (int j = 0; j < c; j++)
+            {
+                Console.Write($"{i+1}.{j+1}: ");
+                B[i, j] = int.Parse(Console.ReadLine() ?? "");
+            }
+        }
+
+        Matrix C = Matrix.sum(A, B);
+        C.p();
+    }
+
+    static void nafdkodf()
+    {
+        Console.WriteLine("Vehicle:");
+        Console.Write("Speed: ");
+        int s = int.Parse(Console.ReadLine() ?? "");
+        Console.Write("Time: ");
+        int t = int.Parse(Console.ReadLine() ?? "");
+        Vehicle A = new Vehicle(s, t);
+        Bicycle B = new Bicycle(s, t);
+        Car C = new Car(s, t);
+
+        while (true)
+        {
+            Console.Write("Choice: ");
+            int choice = int.Parse(Console.ReadLine() ?? "");
+            switch (choice)
+            {
+                case 1:
+                    A.move(A);
+                    continue;
+                case 2:
+                    A.move(B);
+                    continue;
+                case 3:
+                    A.move(C);
+                    continue;
+                case 0:
                     break;
             }
         }
