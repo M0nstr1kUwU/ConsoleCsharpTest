@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
+using static System.Net.Mime.MediaTypeNames;
 
 class Student
 {
@@ -191,6 +192,186 @@ class Car : Vehicle
     }
 }
 
+public class Game
+{
+    protected int hp;
+    public int HP => hp;
+    protected int count_regen;
+    protected int armor;
+    public Game(int hp, int c_regen, int armor)
+    {
+        this.hp = hp;
+        this.count_regen = c_regen;
+        this.armor = armor;
+    }
+
+    public void attack(Game target, int damage)
+    {
+        target.hp -= (damage - target.armor);
+        Console.WriteLine($"Нанесено {damage} урона");
+    }
+
+    public void regen(Game target, int amount)
+    {
+        if (count_regen > 0)
+        {
+            target.hp += amount;
+            target.count_regen--;
+            Console.WriteLine($"Исцелено {amount} хп");
+        }
+        else
+        {
+            Console.WriteLine("Хилок больше не осталось, атакуем");
+            target.hp -= (amount - target.armor);
+            Console.WriteLine($"Нанесено {amount} урона");
+        }
+    }
+}
+
+public class Character : Game
+{
+    private string name_c;
+    private int damage_c;
+    private int amount_c;
+    private int count_call;
+
+    public Character(string name, int hp, int c_regen, int armor, int c_call) : base(hp, c_regen, armor)
+    {
+        name_c = name;
+        damage_c = 0;
+        amount_c = 0;
+        count_call = c_call;
+    }
+
+    public void attack(Game target)
+    {
+        damage_c = RandomNumberGenerator.GetInt32(5, 15);
+        Console.WriteLine($"{name_c} атакует");
+        base.attack(target, damage_c);
+    }
+
+    public void regen(Game target)
+    {
+        amount_c = RandomNumberGenerator.GetInt32(10, 15);
+        Console.WriteLine($"{name_c} исцеляется");
+        base.regen(target, amount_c);
+    }
+
+    public void call(Teamate merlin, Game target)
+    {
+        if (count_call > 0 && !merlin.is_called())
+        {
+            Console.WriteLine($"{name_c} призывает союзника");
+            count_call--;
+            merlin.regen(merlin);
+            merlin.call_add();
+            merlin.attack(target);
+        }
+        else
+        {
+            Console.WriteLine("Невозможно призвать Мерлин сейчас, но она выслала тебе хилку");
+            count_regen++;
+        }
+
+    }
+
+    public void status()
+    {
+        Console.WriteLine($"{name_c} HP: {hp} | Regen: {count_regen}");
+    }
+}
+
+public class Teamate : Game
+{
+    private string name_c;
+    private int damage_c;
+    private int amount_c;
+    private bool is_call = false;
+
+    public Teamate(string name, int hp, int c_regen, int armor) : base(hp, c_regen, armor)
+    {
+        name_c = name;
+        damage_c = 0;
+        amount_c = 0;
+    }
+
+    public void attack(Game target)
+    {
+        damage_c = RandomNumberGenerator.GetInt32(5, 15);
+        Console.WriteLine($"{name_c} атакует");
+        base.attack(target, damage_c);
+    }
+
+    public void regen(Game target)
+    {
+        amount_c = RandomNumberGenerator.GetInt32(50, 100);
+        Console.WriteLine($"{name_c} исцеляется");
+        base.regen(target, amount_c);
+    }
+
+    public void status()
+    {
+        Console.WriteLine($"{name_c} HP: {hp} | Regen: {count_regen}");
+        if (hp <= 0)
+        {
+            Console.WriteLine("Мерлин отступает, дальше ты сам!");
+            is_call = false;
+        }
+    }
+
+    public void call_add()
+    {
+        is_call = true;
+    }
+
+    public bool is_called()
+    {
+        return is_call;
+    }
+}
+
+
+
+public class Enemy : Game
+{
+    private string name_c;
+    private int damage_c;
+    private int amount_c;
+
+    public Enemy(string name, int hp, int c_regen, int armor_c) : base(hp, c_regen, armor_c)
+    {
+        name_c = name;
+        damage_c = 0;
+        amount_c = 0;
+    }
+
+    public void attack(Game target)
+    {
+        damage_c = RandomNumberGenerator.GetInt32(8, 10);
+        Console.WriteLine($"{name_c} атакует");
+        base.attack(target, damage_c);
+    }
+    public void regen(Game target)
+    {
+        amount_c = RandomNumberGenerator.GetInt32(10, 15);
+        Console.WriteLine($"{name_c} исцеляется");
+        base.regen(target, amount_c);
+    }
+
+    public void ultimate(Game target, Game enemy_c)
+    {
+        damage_c = RandomNumberGenerator.GetInt32(15, 30);
+        Console.WriteLine($"{name_c} использует ultimate");
+        base.attack(target, damage_c);
+        base.regen(enemy_c, 50);
+    }
+
+    public void status()
+    {
+        Console.WriteLine($"{name_c} HP: {hp} | Regen: {count_regen}");
+    }
+}
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -235,7 +416,8 @@ internal class Program
                 "28. Вычисление возраста студента\n" +
                 "29. Банк Демоверсия (full в стране Россия)\n" +
                 "30. Сумма матриц (class)\n" +
-                "31. Родительские и дочерние классы\n");
+                "31. Родительские и дочерние классы\n" +
+                "32. Демо игра\n");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -365,6 +547,10 @@ internal class Program
                 case 31:
                     fill_char('~', 30);
                     nafdkodf();
+                    continue;
+                case 32:
+                    fill_char('~', 30);
+                    demo_game();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -1403,5 +1589,93 @@ internal class Program
                     break;
             }
         }
+    }
+
+    static void demo_game()
+    {
+        Console.Write("Имя героя: ");
+        string name = Console.ReadLine() ?? "";
+
+        if (name == string.Empty || name.Length <= 2)
+        {
+            name = "Мелиодас";
+        }
+
+        Character hero = new Character(name, 100, 1, 0, 1);
+        Teamate team = new Teamate("Мерлин", 10, 1, 1);
+        Enemy enemy = new Enemy("Зелдрис", 100, 7, 5);
+
+        int choice, choice_enemy;
+        while (true)
+        {
+            
+            Console.WriteLine(
+                "\n1. Атака\n" +
+                "2. Исцеление\n" +
+                "3. Призыв"
+                );
+            Console.Write("> ");
+            choice = int.Parse(Console.ReadLine() ?? "");
+            switch (choice)
+            {
+                case 1:
+                    fill_char('=', 30);
+                    hero.attack(enemy);
+                    if (team.is_called()) team.attack(enemy);
+                    break;
+                case 2:
+                    fill_char('=', 30);
+                    hero.regen(hero);
+                    break;
+                case 3:
+                    fill_char('=', 30);
+                    hero.call(team, enemy);
+                    break;
+                default:
+                    continue;
+            }
+
+            choice_enemy = RandomNumberGenerator.GetInt32(1, 4);
+            switch (choice_enemy)
+            {
+                case 1:
+                    if (team.is_called()) enemy.attack(team);
+                    else enemy.attack(hero);
+                    break;
+                case 2:
+                    fill_char('=', 30);
+                    enemy.regen(enemy);
+                    break;
+                case 3:
+                    fill_char('=', 30);
+                    if (team.is_called()) enemy.ultimate(team, enemy);
+                    else enemy.ultimate(hero, enemy);
+                    break;
+
+            }
+            
+            fill_char('-', 30);
+            hero.status();
+            if (team.is_called()) team.status();
+            enemy.status();
+
+            if (hero.HP <= 0 && enemy.HP <= 0)
+            {
+                Console.WriteLine("Оба пали в бою");
+                break;
+            }
+            else if (hero.HP <= 0 && enemy.HP > 0)
+            {
+                Console.WriteLine("Враг победил");
+                break;
+            }
+            else if (hero.HP > 0 && enemy.HP <= 0)
+            {
+                Console.WriteLine("Вы победили");
+                break;
+            }
+        }
+        fill_char('=', 30);
+
     }
 }
