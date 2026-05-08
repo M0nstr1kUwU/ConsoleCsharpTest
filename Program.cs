@@ -550,8 +550,16 @@ class ErrorBalance : Exception
 
     public void input(int amount)
     {
-        balance += amount;
-        Console.WriteLine($"Баланс пополнен на {amount}$");
+        try
+        {
+            balance += amount;
+            Console.WriteLine($"Баланс пополнен на {amount}$");
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"{e.GetType().Name}: {e.Message}, {e.TargetSite}");
+        }
+        
     }
 
     public void output(int amount)
@@ -568,11 +576,7 @@ class ErrorBalance : Exception
                 Console.WriteLine($"Баланс снят на {amount}$");
             }
         }
-        catch (ErrorBalance e)
-        {
-            Console.WriteLine($"{e.Message}");
-            Console.WriteLine("Попробуйте снова!");
-        }
+        catch (ErrorBalance e) { Console.WriteLine(e.Message); }
     }
 
     public void show_balance()
@@ -1978,29 +1982,38 @@ internal class Program
         ErrorBalance bank = new ErrorBalance(100);
         while (true)
         {
-            Console.Write("\n" +
-                "1. Положить\n" +
-                "2. Вывести\n" +
-                "3. Баланс\n" +
-                "> ");
-            choice = int.Parse(Console.ReadLine() ?? "");
-            switch (choice)
+            try
             {
-                case 1:
-                    Console.Write("Сумма: ");
-                    amount = int.Parse(Console.ReadLine() ?? "");
-                    bank.input(amount);
-                    continue;
-                case 2:
-                    Console.Write("Сумма: ");
-                    amount = int.Parse(Console.ReadLine() ?? "");
-                    bank.output(amount);
-                    continue;
-                case 3:
-                    bank.show_balance();
-                    continue;
-                case 0:
-                    break;
+                Console.Write("\n" +
+                    "1. Положить\n" +
+                    "2. Вывести\n" +
+                    "3. Баланс\n" +
+                    "> ");
+                choice = int.Parse(Console.ReadLine() ?? "");
+                switch (choice)
+                {
+                    case 1:
+                        Console.Write("Сумма: ");
+                        amount = int.Parse(Console.ReadLine() ?? "");
+                        bank.input(amount);
+                        continue;
+                    case 2:
+                        Console.Write("Сумма: ");
+                        amount = int.Parse(Console.ReadLine() ?? "");
+                        bank.output(amount);
+                        continue;
+                    case 3:
+                        bank.show_balance();
+                        continue;
+                    case 0:
+                        break;
+                    default:
+                        continue;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.GetType().Name}: {e.Message}, {e.TargetSite}");
             }
         }
     }
