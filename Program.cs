@@ -539,6 +539,48 @@ class CalculatorProtecteionError
     }
 }
 
+class ErrorBalance : Exception
+{
+    private int balance;
+
+    public ErrorBalance(int balance) : base($"Недостаточно средств! Баланс: {balance}$")
+    {
+        this.balance = balance;
+    }
+
+    public void input(int amount)
+    {
+        balance += amount;
+        Console.WriteLine($"Баланс пополнен на {amount}$");
+    }
+
+    public void output(int amount)
+    {
+        try
+        {
+            if (amount > balance)
+            {
+                throw new ErrorBalance(balance);
+            }
+            else
+            {
+                balance -= amount;
+                Console.WriteLine($"Баланс снят на {amount}$");
+            }
+        }
+        catch (ErrorBalance e)
+        {
+            Console.WriteLine($"{e.Message}");
+            Console.WriteLine("Попробуйте снова!");
+        }
+    }
+
+    public void show_balance()
+    {
+        Console.WriteLine($"Баланс: {balance}$");
+    }
+}
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -586,7 +628,8 @@ internal class Program
                 "31. Родительские и дочерние классы\n" +
                 "32. Демо игра\n" +
                 "33. Симулятор плохого программиста (специально пишем код с ошибками и ловим их)\n" +
-                "34. Калькулятор с обработчиками ошибок");
+                "34. Калькулятор с обработчиками ошибок\n" +
+                "35. Банк с перехватом ошибок\n");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -728,6 +771,10 @@ internal class Program
                 case 34:
                     fill_char('~', 30);
                     exception_class_result();
+                    continue;
+                case 35:
+                    fill_char('~', 30);
+                    bank_class_exception();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -1918,6 +1965,39 @@ internal class Program
                     continue;
                 case 6:
                     calculator.addition_array();
+                    continue;
+                case 0:
+                    break;
+            }
+        }
+    }
+
+    static void bank_class_exception()
+    {
+        int choice, amount;
+        ErrorBalance bank = new ErrorBalance(100);
+        while (true)
+        {
+            Console.Write("\n" +
+                "1. Положить\n" +
+                "2. Вывести\n" +
+                "3. Баланс\n" +
+                "> ");
+            choice = int.Parse(Console.ReadLine() ?? "");
+            switch (choice)
+            {
+                case 1:
+                    Console.Write("Сумма: ");
+                    amount = int.Parse(Console.ReadLine() ?? "");
+                    bank.input(amount);
+                    continue;
+                case 2:
+                    Console.Write("Сумма: ");
+                    amount = int.Parse(Console.ReadLine() ?? "");
+                    bank.output(amount);
+                    continue;
+                case 3:
+                    bank.show_balance();
                     continue;
                 case 0:
                     break;
