@@ -1296,22 +1296,48 @@ internal class Program
         Console.Write("\n");
     }
 
+    static string[] words =
+    {
+         "кот", "ток", "дом", "мод", "нос", "сон",
+         "мир", "рим", "лес", "сел", "рак", "кар"
+    };
+
     static void check_word_in_array_50()
     {
-        string[] arr =
-        {
-
-        };
+        Console.Write("Слово: ");
+        string searchWord = Console.ReadLine() ?? "";
+        if (words.Contains(searchWord))
+            Console.WriteLine("Найдено");
+        else
+            Console.WriteLine("Нет");
+        Console.WriteLine();
     }
 
     static void check_annogram_in_array()
     {
-
+        Console.Write("Слово: ");
+        string input = Console.ReadLine() ?? "";
+        var anagrams = words.Where(w =>
+            w.Length == input.Length &&
+            String.Concat(w.OrderBy(c => c)) ==
+            String.Concat(input.OrderBy(c => c))
+        );
+        Console.WriteLine("Анаграммы:");
+        foreach (var word in anagrams)
+        {
+            Console.WriteLine(word);
+        }
+        Console.WriteLine();
     }
 
     static void sort_for_last_index()
     {
-
+        var sorted = words.OrderBy(w => w[w.Length - 1]);
+        Console.WriteLine("Сортировка по последней букве:");
+        foreach (var word in sorted)
+        {
+            Console.WriteLine(word);
+        }
     }
 
     static int fibonachi(int a)
