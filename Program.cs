@@ -287,7 +287,7 @@ public class Character : Game
 
     public void explosion(Game target, Game player)
     {
-        if(count_explosion > 0)
+        if (count_explosion > 0)
         {
             Console.WriteLine($"{name_c} использует !EXPLOSION!");
             count_explosion--;
@@ -400,6 +400,145 @@ public class Enemy : Game
     }
 }
 
+class CalculatorProtecteionError
+{
+    public void addition()
+    {
+        try
+        {
+            Console.Write("A: ");
+            int a = int.Parse(Console.ReadLine() ?? "");
+            Console.Write("B: ");
+            int b = int.Parse(Console.ReadLine() ?? "");
+            Console.WriteLine($"{a} + {b} = {a + b}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"\nОшибка {e.GetType().Name}: {e.Message}\n" +
+                $"[{e.TargetSite}, {e.StackTrace}, {e.Source}]\n" +
+                $"{e.HResult}\n");
+        }
+    }
+
+    public void substraction()
+    {
+        try
+        {
+            Console.Write("A: ");
+            int a = int.Parse(Console.ReadLine() ?? "");
+            Console.Write("B: ");
+            int b = int.Parse(Console.ReadLine() ?? "");
+            Console.WriteLine($"{a} - {b} = {a - b}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"\nОшибка {e.GetType().Name}: {e.Message}\n" +
+                $"[{e.TargetSite}, {e.StackTrace}, {e.Source}]\n" +
+                $"{e.HResult}\n");
+        }
+    }
+
+    public void multiplication()
+    {
+        try
+        {
+            Console.Write("A: ");
+            int a = int.Parse(Console.ReadLine() ?? "");
+            Console.Write("B: ");
+            int b = int.Parse(Console.ReadLine() ?? "");
+            Console.WriteLine($"{a} * {b} = {a * b}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"\nОшибка {e.GetType().Name}: {e.Message}\n" +
+                $"[{e.TargetSite}, {e.StackTrace}, {e.Source}]\n" +
+                $"{e.HResult}\n");
+        }
+    }
+
+    public void division()
+    {
+        try
+        {
+            Console.Write("A: ");
+            int a = int.Parse(Console.ReadLine() ?? "");
+            Console.Write("B: ");
+            int b = int.Parse(Console.ReadLine() ?? "");
+            Console.WriteLine($"{a} / {b} = {a / b}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"\nОшибка {e.GetType().Name}: {e.Message}\n" +
+                $"[{e.TargetSite}, {e.StackTrace}, {e.Source}]\n" +
+                $"{e.HResult}\n");
+        }
+    }
+
+    public void percentage_division()
+    {
+        try
+        {
+            Console.Write("A: ");
+            int a = int.Parse(Console.ReadLine() ?? "");
+            Console.Write("B: ");
+            int b = int.Parse(Console.ReadLine() ?? "");
+            Console.WriteLine($"{a} % {b} = {a % b}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"\nОшибка {e.GetType().Name}: {e.Message}\n" +
+                $"[{e.TargetSite}, {e.StackTrace}, {e.Source}]\n" +
+                $"{e.HResult}\n");
+        }
+    }
+
+    public void addition_array()
+    {
+        try
+        {
+            Console.Write("Size: ");
+            int size = int.Parse(Console.ReadLine() ?? "");
+            int[] arr1 = new int[size];
+            Console.WriteLine("Array 1:");
+            for (int i = 0; i < size; i++)
+            {
+                Console.Write($"{i + 1}. ");
+                arr1[i] = int.Parse(Console.ReadLine() ?? "");
+            }
+            int[] arr2 = new int[size];
+            Console.WriteLine("Array 2:");
+            for (int i = 0; i < size; i++)
+            {
+                Console.Write($"{i + 1}. ");
+                arr2[i] = int.Parse(Console.ReadLine() ?? "");
+            }
+            int[] arr3 = new int[size];
+            for (int i = 0; i < size; i++)
+            {
+                arr3[i] = arr1[i] + arr2[i];
+            }
+            Console.Write("Массив суммы: [");
+            for (int i = 0; i < size; i++)
+            {
+                if (size - 1 == i)
+                {
+                    Console.Write($"{arr3[i]}]\n");
+                }
+                else
+                {
+                    Console.Write($"{arr3[i]}, ");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"\nОшибка {e.GetType().Name}: {e.Message}\n" +
+                $"[{e.TargetSite}, {e.StackTrace}, {e.Source}]\n" +
+                $"{e.HResult}\n");
+        }
+    }
+}
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -445,7 +584,9 @@ internal class Program
                 "29. Банк Демоверсия (full в стране Россия)\n" +
                 "30. Сумма матриц (class)\n" +
                 "31. Родительские и дочерние классы\n" +
-                "32. Демо игра\n");
+                "32. Демо игра\n" +
+                "33. Симулятор плохого программиста (специально пишем код с ошибками и ловим их)\n" +
+                "34. Калькулятор с обработчиками ошибок");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -579,6 +720,14 @@ internal class Program
                 case 32:
                     fill_char('~', 30);
                     demo_game();
+                    continue;
+                case 33:
+                    fill_char('~', 30);
+                    exception_result();
+                    continue;
+                case 34:
+                    fill_char('~', 30);
+                    exception_class_result();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -1709,6 +1858,70 @@ internal class Program
             }
         }
         fill_char('=', 30);
+    }
 
+    static void exception_result()
+    {
+        string er = "0";
+        try
+        {
+            Console.Write("A: ");
+            int a = int.Parse(Console.ReadLine());
+            Console.Write("B: ");
+            int b = int.Parse(Console.ReadLine());
+            Console.WriteLine($"{a} / {b} = {a / b}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"\nОшибка {e.GetType().Name}: {e.Message}\n" +
+                $"[{e.TargetSite}, {e.StackTrace}, {e.Source}]\n" +
+                $"{e.HResult}\n");
+            er = $"{e.HResult}";
+        }
+        finally
+        {
+            Console.WriteLine($"Метод завершен! {er}");
+        }
+    }
+
+    static void exception_class_result()
+    {
+        int choice;
+        CalculatorProtecteionError calculator = new CalculatorProtecteionError();
+        while (true)
+        {
+            Console.Write("\n" +
+                "1. Сложение\n" +
+                "2. Вычитание\n" +
+                "3. Умножение\n" +
+                "4. Деление\n" +
+                "5. Деление с остатком\n" +
+                "6. Сложение массивов\n" +
+                "> ");
+            choice = int.Parse(Console.ReadLine() ?? "");
+            switch (choice)
+            {
+                case 1:
+                    calculator.addition();
+                    continue;
+                case 2:
+                    calculator.substraction();
+                    continue;
+                case 3:
+                    calculator.multiplication();
+                    continue;
+                case 4:
+                    calculator.division();
+                    continue;
+                case 5:
+                    calculator.percentage_division();
+                    continue;
+                case 6:
+                    calculator.addition_array();
+                    continue;
+                case 0:
+                    break;
+            }
+        }
     }
 }
