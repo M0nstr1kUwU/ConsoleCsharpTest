@@ -1640,7 +1640,8 @@ internal class Program
             Console.WriteLine(
                 "\n1. Атака\n" +
                 "2. Исцеление\n" +
-                "3. Призыв"
+                "3. Призыв\n" +
+                "4. [!] EXPLOSION"
                 );
             Console.Write("> ");
             choice = int.Parse(Console.ReadLine() ?? "");
@@ -1658,6 +1659,10 @@ internal class Program
                 case 3:
                     fill_char('=', 30);
                     hero.call(team, enemy);
+                    break;
+                case 4:
+                    fill_char('=', 30);
+                    hero.explosion(enemy, hero);
                     break;
                 default:
                     continue;
