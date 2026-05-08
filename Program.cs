@@ -555,11 +555,11 @@ class ErrorBalance : Exception
             balance += amount;
             Console.WriteLine($"Баланс пополнен на {amount}$");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine($"{e.GetType().Name}: {e.Message}, {e.TargetSite}");
         }
-        
+
     }
 
     public void output(int amount)
@@ -1723,6 +1723,51 @@ internal class Program
         }
     }
 
+    static void sort_by_last_letter()
+    {
+        string[] wds = { "кот", "дом", "арбуз", "лес", "нос" };
+        var sorted = wds.OrderBy(w => w[w.Length - 1]);
+        foreach (var word in sorted)
+        {
+            Console.WriteLine(word);
+        }
+        Console.WriteLine();
+    }
+
+    static void sum_numbers_from_string_array()
+    {
+        string[] arr = { "10", "кот", "25", "abc", "5" };
+        int sum = 0;
+        foreach (string i in arr)
+        {
+            if (int.TryParse(i, out int number))
+            {
+                sum += number;
+            }
+        }
+        Console.WriteLine($"Сумма чисел: {sum}");
+    }
+
+    static void check_power_two()
+    {
+        Console.Write("Введите число: ");
+        int number = Convert.ToInt32(Console.ReadLine());
+        if (IsPowerOfTwo(number))
+            Console.WriteLine("Является");
+        else
+            Console.WriteLine("Не является");
+    }
+
+    static bool IsPowerOfTwo(int n)
+    {
+        if (n < 1) return false;
+        while (n % 2 == 0)
+        {
+            n /= 2;
+        }
+        return n == 1;
+    }
+
     static void bankDemo()
     {
         Console.Write("Пользователь: ");
@@ -1943,9 +1988,9 @@ internal class Program
         try
         {
             Console.Write("A: ");
-            int a = int.Parse(Console.ReadLine());
+            int a = int.Parse(Console.ReadLine() ?? "");
             Console.Write("B: ");
-            int b = int.Parse(Console.ReadLine());
+            int b = int.Parse(Console.ReadLine() ?? "");
             Console.WriteLine($"{a} / {b} = {a / b}");
         }
         catch (Exception e)
