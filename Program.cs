@@ -123,7 +123,7 @@ class Matrix
         {
             throw new Exception("Размеры не совпадают, не могу посчитать :(");
         }
-        
+
 
         Matrix result = new Matrix(a.R, a.C);
         for (int i = 0; i < a.R; i++)
@@ -160,7 +160,7 @@ class Vehicle
     public int Distance { get; set; }
     public int Time { get; set; }
 
-    public Vehicle(int speed, int time, int distance = 0) 
+    public Vehicle(int speed, int time, int distance = 0)
     {
         Speed = speed;
         Distance = distance;
@@ -175,7 +175,7 @@ class Vehicle
 
 class Bicycle : Vehicle
 {
-    public Bicycle(int speed, int time, int distance = 0) : base(speed + 1, time + 1, distance + 1){}
+    public Bicycle(int speed, int time, int distance = 0) : base(speed + 1, time + 1, distance + 1) { }
     public override void move(Vehicle f)
     {
         base.move(f);
@@ -184,7 +184,7 @@ class Bicycle : Vehicle
 
 class Car : Vehicle
 {
-    public Car(int speed, int time, int distance = 0) : base(speed + 10, time, distance){}
+    public Car(int speed, int time, int distance = 0) : base(speed + 10, time, distance) { }
 
     public override void move(Vehicle f)
     {
@@ -201,7 +201,7 @@ public class Game
     public Game(int hp, int c_regen, int armor)
     {
         this.hp = hp;
-        this.count_regen = c_regen;
+        count_regen = c_regen;
         this.armor = armor;
     }
 
@@ -234,13 +234,17 @@ public class Character : Game
     private int damage_c;
     private int amount_c;
     private int count_call;
+    private int count_explosion;
+    private int c_attack_for_exp = 3;
 
-    public Character(string name, int hp, int c_regen, int armor, int c_call) : base(hp, c_regen, armor)
+    public Character(string name, int hp, int c_regen, int armor, int c_call, int c_explosion) : base(hp, c_regen, armor)
     {
         name_c = name;
         damage_c = 0;
         amount_c = 0;
         count_call = c_call;
+        count_regen = c_regen;
+        count_explosion = c_explosion;
     }
 
     public void attack(Game target)
@@ -248,6 +252,12 @@ public class Character : Game
         damage_c = RandomNumberGenerator.GetInt32(5, 15);
         Console.WriteLine($"{name_c} атакует");
         base.attack(target, damage_c);
+        if (c_attack_for_exp > 0) c_attack_for_exp--;
+        else
+        {
+            c_attack_for_exp = 3;
+            count_explosion++;
+        }
     }
 
     public void regen(Game target)
@@ -275,9 +285,24 @@ public class Character : Game
 
     }
 
+    public void explosion(Game target, Game player)
+    {
+        if(count_explosion > 0)
+        {
+            Console.WriteLine($"{name_c} использует !EXPLOSION!");
+            count_explosion--;
+            player.attack(target, 100);
+            player.regen(player, 20);
+        }
+        else
+        {
+            Console.WriteLine($"{name_c} не может кастануть имбу, атак осталось ({c_attack_for_exp})");
+        }
+    }
+
     public void status()
     {
-        Console.WriteLine($"{name_c} HP: {hp} | Regen: {count_regen}");
+        Console.WriteLine($"{name_c} HP: {hp} | Regen: {count_regen} | Exp: {count_explosion}");
     }
 }
 
@@ -293,6 +318,7 @@ public class Teamate : Game
         name_c = name;
         damage_c = 0;
         amount_c = 0;
+        count_regen = c_regen;
     }
 
     public void attack(Game target)
@@ -343,6 +369,7 @@ public class Enemy : Game
         name_c = name;
         damage_c = 0;
         amount_c = 0;
+        count_regen = c_regen;
     }
 
     public void attack(Game target)
@@ -363,7 +390,8 @@ public class Enemy : Game
         damage_c = RandomNumberGenerator.GetInt32(15, 30);
         Console.WriteLine($"{name_c} использует ultimate");
         base.attack(target, damage_c);
-        base.regen(enemy_c, 50);
+        count_regen++;
+        base.regen(enemy_c, RandomNumberGenerator.GetInt32(5, 20));
     }
 
     public void status()
@@ -1125,7 +1153,7 @@ internal class Program
         string[] str = new string[size];
         for (int i = 0; i < size; i++)
         {
-            Console.Write($"{i+1}. ");
+            Console.Write($"{i + 1}. ");
             str[i] = Console.ReadLine() ?? "";
         }
 
@@ -1163,7 +1191,7 @@ internal class Program
             str[i] = int.Parse(Console.ReadLine() ?? "");
         }
         int[] str_pere = new int[size];
-        for (int i = 0;i < size; i++)
+        for (int i = 0; i < size; i++)
         {
             str_pere[i] = str[size - 1 - i];
         }
@@ -1193,7 +1221,7 @@ internal class Program
             num[i] = int.Parse(Console.ReadLine() ?? "");
         }
 
-        for (int i = 0; i < size ; i++)
+        for (int i = 0; i < size; i++)
         {
             if (num[i] % 2 == 0)
             {
@@ -1276,9 +1304,9 @@ internal class Program
 
         int[,] arr = new int[str, stb];
 
-        for (int i = 0; i < str ; i++)
+        for (int i = 0; i < str; i++)
         {
-            for (int j = 0; j < stb ; j++)
+            for (int j = 0; j < stb; j++)
             {
                 Console.Write($"{i + 1}.{j + 1}: ");
                 arr[i, j] = int.Parse(Console.ReadLine() ?? "");
@@ -1311,7 +1339,7 @@ internal class Program
         {
             arr1[ix++] = x;
         }
-            
+
         for (int i = 0; i < f - 1; i++)
         {
             for (int j = 0; j < f - 1 - i; j++)
@@ -1323,9 +1351,9 @@ internal class Program
                     arr1[j + 1] = temp;
                 }
             }
-                            
+
         }
-            
+
         ix = 0;
         for (int i = 0; i < str; i++)
         {
@@ -1442,7 +1470,7 @@ internal class Program
 
         int[,] arr_rev = new int[str, stb];
 
-        for (int i = 0; i < str ; i++)
+        for (int i = 0; i < str; i++)
         {
             for (int j = 0; j < stb; j++)
             {
@@ -1540,7 +1568,7 @@ internal class Program
         {
             for (int j = 0; j < c; j++)
             {
-                Console.Write($"{i+1}.{j+1}: ");
+                Console.Write($"{i + 1}.{j + 1}: ");
                 A[i, j] = int.Parse(Console.ReadLine() ?? "");
             }
         }
@@ -1550,7 +1578,7 @@ internal class Program
         {
             for (int j = 0; j < c; j++)
             {
-                Console.Write($"{i+1}.{j+1}: ");
+                Console.Write($"{i + 1}.{j + 1}: ");
                 B[i, j] = int.Parse(Console.ReadLine() ?? "");
             }
         }
@@ -1601,14 +1629,14 @@ internal class Program
             name = "Мелиодас";
         }
 
-        Character hero = new Character(name, 100, 1, 0, 1);
+        Character hero = new Character(name, 100, 1, 0, 1, 1);
         Teamate team = new Teamate("Мерлин", 10, 1, 1);
         Enemy enemy = new Enemy("Зелдрис", 100, 7, 5);
 
         int choice, choice_enemy;
         while (true)
         {
-            
+
             Console.WriteLine(
                 "\n1. Атака\n" +
                 "2. Исцеление\n" +
@@ -1653,7 +1681,7 @@ internal class Program
                     break;
 
             }
-            
+
             fill_char('-', 30);
             hero.status();
             if (team.is_called()) team.status();
