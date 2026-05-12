@@ -1,9 +1,12 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
 using static System.Net.Mime.MediaTypeNames;
+using ClassTest.Class1NS;
+using ClassTest.CalculatorNS;
+using System.Data.Common;
 
 class Student
 {
@@ -633,7 +636,8 @@ internal class Program
                 "32. Демо игра\n" +
                 "33. Симулятор плохого программиста (специально пишем код с ошибками и ловим их)\n" +
                 "34. Калькулятор с обработчиками ошибок\n" +
-                "35. Банк с перехватом ошибок\n");
+                "35. Банк с перехватом ошибок\n" +
+                "36. Вывод hw из другого файла\n");
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -779,6 +783,64 @@ internal class Program
                 case 35:
                     fill_char('~', 30);
                     bank_class_exception();
+                    continue;
+                case 36:
+                    fill_char('~', 30);
+                    Class1 dafae = new Class1();
+                    dafae.print_hw();
+                    Console.Write("A: ");
+                    int a_f = int.Parse(Console.ReadLine() ?? "");
+                    Console.Write("B: ");
+                    int b_f = int.Parse(Console.ReadLine() ?? "");
+                    dafae.addAB(a_f, b_f);
+                    continue;
+                case 37:
+                    fill_char('~', 30);
+                    Calculator danon = new Calculator();
+                    try
+                    {
+                        Console.Write("A: ");
+                        double ad = double.Parse(Console.ReadLine() ?? "");
+                        Console.Write("Операция (+ - * /): ");
+                        string op = Console.ReadLine() ?? "";
+                        Console.Write("B: ");
+                        double bd = double.Parse(Console.ReadLine() ?? "");
+                        double result = 0;
+                        switch (op)
+                        {
+                            case "+":
+                                result = danon.add(ad, bd);
+                                break;
+
+                            case "-":
+                                result = danon.sub(ad, bd);
+                                break;
+
+                            case "*":
+                                result = danon.mul(ad, bd);
+                                break;
+
+                            case "/":
+                                result = danon.div(ad, bd);
+                                break;
+                            default:
+                                Console.WriteLine("Неизвестная операция");
+                                return;
+                        }
+                        Console.WriteLine($"Результат: {result}");
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Ошибка: введено не число");
+                    }
+                    catch (DivideByZeroException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Неизвестная ошибка: {ex.Message}");
+                    }
                     continue;
                 case 0:
                     fill_char('~', 30);
