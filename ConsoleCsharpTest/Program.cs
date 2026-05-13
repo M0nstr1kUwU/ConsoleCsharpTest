@@ -341,32 +341,24 @@ class OperatorPatches
 
     public static bool operator >(OperatorPatches patch1, OperatorPatches patch2)
     {
-       if (patch1.a > patch2.a)
-            return true;
-       else if (patch1.a <= patch2.a)
-            if (patch1.a == patch2.a)
-                if (patch1.b > patch2.b)
-                    return true;
-                else if (patch1.b <= patch2.b)
-                    if (patch1.b == patch2.b)
-                        if (patch1.c > patch2.c)
-                            return true;
-                        else return false;
+        if (patch1.a > patch2.a) return true;
+        if (patch1.a < patch2.a) return false;
+
+        if (patch1.b > patch2.b) return true;
+        if (patch1.b < patch2.b) return false;
+
+        return patch1.c > patch2.c;
     }
 
     public static bool operator <(OperatorPatches patch1, OperatorPatches patch2)
     {
-        if (patch1.a < patch2.a)
-            return true;
-        else if (patch1.a >= patch2.a)
-            if (patch1.a == patch2.a)
-                if (patch1.b < patch2.b)
-                    return true;
-                else if (patch1.b >= patch2.b)
-                    if (patch1.b == patch2.b)
-                        if (patch1.c < patch2.c)
-                            return true;
-                        else return false;
+        if (patch1.a < patch2.a) return true;
+        if (patch1.a > patch2.a) return false;
+
+        if (patch1.b < patch2.b) return true;
+        if (patch1.b > patch2.b) return false;
+
+        return patch1.c < patch2.c;
     }
 
     public static bool operator ==(OperatorPatches patch1, OperatorPatches patch2)
@@ -394,6 +386,9 @@ class MainBank
         this.name = name;
         this.balance = balance;
     }
+
+    public string Name => name;
+    public int Balance => balance;
 
     public void deposit(UserMainBank user, int amount)
     {
@@ -1180,7 +1175,7 @@ internal class Program
                     continue;
                 case 38:
                     fill_char('~', 30);
-                    // dodelat
+                    run_main_bank_console();
                     continue;
                 case 39:
                     fill_char('~', 30);
@@ -2554,6 +2549,12 @@ internal class Program
         int cp;
         OperatorPatches patch1 = new OperatorPatches(1, 0, 0);
         OperatorPatches patch2 = new OperatorPatches(1, 2, 0);
+
+        Console.WriteLine("\n" +
+                $"Patch1: {patch1.a}.{patch1.b}.{patch1.c}\n" +
+                $"Patch2: {patch2.a}.{patch2.b}.{patch2.c}\n"
+        );
+
         while (true)
         {
             Console.WriteLine(
@@ -2561,22 +2562,30 @@ internal class Program
                 "Actions:\n" +
                 "1. version++\n" +
                 "2. version+ patch\n" +
-                "3. v > v\n" +
-                "4. v < v\n" +
-                "5. v == v\n" +
-                "6. v != v"
+                "3. v >/< v\n" +
+                "4. v ==/!= v\n"
             );
             Console.Write("> ");
             choice = int.Parse(Console.ReadLine() ?? "");
-            Console.Write("Patch: ");
-            patch = int.Parse(Console.ReadLine() ?? "");
             switch (choice)
             {
                 case 1:
+                    Console.Write("Patch: ");
+                    patch = int.Parse(Console.ReadLine() ?? "");
+
                     if (patch == 1) patch1++;
                     else if (patch == 2) patch2++;
+
+                    Console.WriteLine("\n" +
+                        $"Patch1: {patch1.a}.{patch1.b}.{patch1.c}\n" +
+                        $"Patch2: {patch2.a}.{patch2.b}.{patch2.c}\n"
+                    );
+
                     continue;
                 case 2:
+                    Console.Write("Patch: ");
+                    patch = int.Parse(Console.ReadLine() ?? "");
+
                     if (patch == 1)
                     {
                         Console.Write("Part: ");
@@ -2593,25 +2602,167 @@ internal class Program
                         else if (cp == 2) patch2.b += 1;
                         else if (cp == 3) patch2.c += 1;
                     }
+
+                    Console.WriteLine("\n" +
+                        $"Patch1: {patch1.a}.{patch1.b}.{patch1.c}\n" +
+                        $"Patch2: {patch2.a}.{patch2.b}.{patch2.c}\n"
+                    );
+
                     continue;
                 case 3:
+                    if (patch1 > patch2) Console.WriteLine($"{patch1.a}.{patch1.b}.{patch1.c} > {patch2.a}.{patch2.b}.{patch2.c}");
+                    else Console.WriteLine($"{patch1.a}.{patch1.b}.{patch1.c} < {patch2.a}.{patch2.b}.{patch2.c}");
+
+                    Console.WriteLine("\n" +
+                        $"Patch1: {patch1.a}.{patch1.b}.{patch1.c}\n" +
+                        $"Patch2: {patch2.a}.{patch2.b}.{patch2.c}\n"
+                    );
+
                     continue;
                 case 4:
-                    continue;
-                case 5:
-                    continue;
-                case 6:
+                    if (patch1 == patch2) Console.WriteLine($"{patch1.a}.{patch1.b}.{patch1.c} == {patch2.a}.{patch2.b}.{patch2.c}");
+                    else Console.WriteLine($"{patch1.a}.{patch1.b}.{patch1.c} != {patch2.a}.{patch2.b}.{patch2.c}");
+
+                    Console.WriteLine("\n" +
+                        $"Patch1: {patch1.a}.{patch1.b}.{patch1.c}\n" +
+                        $"Patch2: {patch2.a}.{patch2.b}.{patch2.c}\n"
+                    );
+
                     continue;
                 case 0:
                     break;
                 default:
                     continue;
             }
-            Console.WriteLine(
-                $"Patch1: {patch1.a}.{patch1.b}.{patch1.c}\n" +
-                $"Patch2: {patch2.a}.{patch2.b}.{patch2.c}\n"
-            );
         }
-        
+    }
+
+    static void run_main_bank_console()
+    {
+        List<UserMainBank> users = new List<UserMainBank>();
+        UserMainBank currentUser = null;
+        MainBank bank = new MainBank("BankOperator", 0);
+
+        string input, name;
+
+        while (true)
+        {
+            Console.WriteLine(
+                "\n=== БАНКОВСКАЯ СИСТЕМА ===\n" +
+                "1. Создать нового пользователя\n" +
+                "2. Показать всех пользователей\n" +
+                "3. Выбрать текущего пользователя\n" +
+                "4. Пополнить баланс (текущий пользователь)\n" +
+                "5. Снять деньги (текущий пользователь)\n" +
+                "6. Показать баланс текущего пользователя\n" +
+                "7. Перевести деньги другому пользователю\n" +
+                "0. Выйти"
+            );
+            Console.Write("> ");
+            input = Console.ReadLine() ?? "";
+
+            switch (input)
+            {
+                case "0":
+                    Console.WriteLine("Выход из системы");
+                    return;
+
+                case "1":
+                    Console.Write("Имя: ");
+                    name = Console.ReadLine() ?? "";
+                    if (name.Length < 2) name = $"Unknown{RandomNumberGenerator.GetInt32(1, 434)}";
+                    Console.Write("Баланс: ");
+                    if (!int.TryParse(Console.ReadLine(), out int startBalance) || startBalance < 0)
+                    {
+                        startBalance = 0;
+                    }
+                    UserMainBank newUser = new UserMainBank(name, startBalance);
+                    users.Add(newUser);
+                    Console.WriteLine($"Пользователь {name} создан с балансом {startBalance}$.");
+                    if (currentUser == null) currentUser = newUser;
+                    break;
+
+                case "2":
+                    if (users.Count == 0)
+                    {
+                        Console.WriteLine("Нет ни одного пользователя.");
+                        break;
+                    }
+                    Console.WriteLine("\nСписок пользователей:");
+                    for (int i = 0; i < users.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {users[i].Name} — баланс: {users[i].Balance}$");
+                    }
+                    break;
+
+                case "3":
+                    if (users.Count == 0)
+                    {
+                        Console.WriteLine("Нет пользователей. Сначала создайте хотя бы одного.");
+                        break;
+                    }
+                    Console.WriteLine("Выберите пользователя:");
+                    for (int i = 0; i < users.Count; i++)
+                        Console.WriteLine($"{i + 1}. {users[i].Name}");
+                    Console.Write("Номер: ");
+                    if (int.TryParse(Console.ReadLine(), out int idx) && idx >= 1 && idx <= users.Count)
+                    {
+                        currentUser = users[idx - 1];
+                        Console.WriteLine($"Текущий пользователь: {currentUser.Name}");
+                    }
+                    else Console.WriteLine("Неверный номер.");
+                    break;
+
+                case "4":
+                    if (currentUser == null) { Console.WriteLine("Сначала выберите пользователя."); break; }
+                    Console.Write("Сумма пополнения: ");
+                    if (int.TryParse(Console.ReadLine(), out int dep) && dep > 0)
+                        bank.deposit(currentUser, dep);
+                    else Console.WriteLine("Неверная сумма.");
+                    break;
+
+                case "5":
+                    if (currentUser == null) { Console.WriteLine("Сначала выберите пользователя."); break; }
+                    Console.Write("Сумма снятия: ");
+                    if (int.TryParse(Console.ReadLine(), out int wit) && wit > 0)
+                        bank.withdraw(currentUser, wit);
+                    else Console.WriteLine("Неверная сумма.");
+                    break;
+
+                case "6":
+                    if (currentUser == null) { Console.WriteLine("Сначала выберите пользователя."); break; }
+                    bank.show(currentUser);
+                    break;
+
+                case "7":
+                    if (currentUser == null) { Console.WriteLine("Сначала выберите отправителя."); break; }
+                    if (users.Count < 2)
+                    {
+                        Console.WriteLine("Нужно хотя бы два пользователя для перевода.");
+                        break;
+                    }
+                    Console.WriteLine("Перевести: ");
+                    for (int i = 0; i < users.Count; i++)
+                    {
+                        if (users[i] != currentUser)
+                            Console.WriteLine($"{i + 1}. {users[i].Name} (баланс: {users[i].Balance}$)");
+                    }
+                    Console.Write("Номер получателя: ");
+                    if (int.TryParse(Console.ReadLine(), out int toIdx) && toIdx >= 1 && toIdx <= users.Count && users[toIdx - 1] != currentUser)
+                    {
+                        UserMainBank receiver = users[toIdx - 1];
+                        Console.Write("Сумма перевода: ");
+                        if (int.TryParse(Console.ReadLine(), out int amount) && amount > 0)
+                            bank.transaction(currentUser, receiver, amount);
+                        else Console.WriteLine("Неверная сумма.");
+                    }
+                    else Console.WriteLine("Неверный выбор получателя.");
+                    break;
+
+                default:
+                    Console.WriteLine("Неизвестная команда.");
+                    break;
+            }
+        }
     }
 }
