@@ -912,6 +912,81 @@ class ErrorBalance : Exception
     }
 }
 
+class Exchange
+{
+    protected string Name;
+    protected string Code;
+
+    public Exchange(string name, string code)
+    {
+        Name = name;
+        Code = code;
+    }
+
+    public void ShowExchangeRate(Exchange target, double rate)
+    {
+        Console.WriteLine($"Курс: 1 {Code} ({Name}) = {rate} {target.Code} ({target.Name})");
+        Console.WriteLine($"Обратный курс: 1 {target.Code} = {1.0 / rate:F2} {Code}");
+    }
+
+    public string GetCode() => Code;
+    public string GetName() => Name;
+}
+
+class USD : Exchange
+{
+    public USD() : base("Доллар США", "USD") { }
+
+    public void ShowRateTo(Exchange other, double rate)
+    {
+        Console.Write($"{Code} -> {other.GetCode()}: ");
+        base.ShowExchangeRate(other, rate);
+    }
+}
+class RUB : Exchange
+{
+    public RUB() : base("Российский рубль", "RUB") { }
+
+    public void ShowRateTo(Exchange other, double rate)
+    {
+        Console.Write($"{Code} -> {other.GetCode()}: ");
+        base.ShowExchangeRate(other, rate);
+    }
+}
+
+class EUR : Exchange
+{
+    public EUR() : base("Евро", "EUR") { }
+
+    public void ShowRateTo(Exchange other, double rate)
+    {
+        Console.Write($"{Code} -> {other.GetCode()}: ");
+        base.ShowExchangeRate(other, rate);
+    }
+}
+
+class UAN : Exchange
+{
+    public UAN() : base("Китайский юань", "UAN") { }
+
+    public void ShowRateTo(Exchange other, double rate)
+    {
+        Console.Write($"{Code} -> {other.GetCode()}: ");
+        base.ShowExchangeRate(other, rate);
+    }
+}
+
+class PESO : Exchange
+{
+    public PESO() : base("Мексиканское песо", "PESO") { }
+
+    public void ShowRateTo(Exchange other, double rate)
+    {
+        Console.Write($"{Code} -> {other.GetCode()}: ");
+        base.ShowExchangeRate(other, rate);
+    }
+}
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -967,7 +1042,9 @@ internal class Program
                 "39. Перегрузка операторов\n" +
                 "40. Перугрузка двумерного вектора\n" +
                 "41. Перегрузка условных операторов (просто есть)\n" +
-                "42. Перегрузка условных операторов для патчей\n"
+                "42. Перегрузка условных операторов для патчей\n" +
+                "43. Курсы валют (наследование Exchange)\n" +
+                "44. Проверка пароля\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1192,6 +1269,14 @@ internal class Program
                 case 42:
                     fill_char('~', 30);
                     patch_operators();
+                    continue;
+                case 43:
+                    fill_char('~', 30);
+                    demo_exchange();
+                    continue;
+                case 44:
+                    fill_char('~', 30);
+                    password_check();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -2764,5 +2849,107 @@ internal class Program
                     break;
             }
         }
+    }
+
+    static void demo_exchange()
+    {
+        USD usd = new USD();
+        RUB rub = new RUB();
+        EUR eur = new EUR();
+        UAN uan = new UAN();
+        PESO peso = new PESO();
+
+        Console.WriteLine("\n--- Курс USD к RUB ---");
+        usd.ShowRateTo(rub, 91.50);
+
+        Console.WriteLine("\n--- Курс EUR к USD ---");
+        eur.ShowRateTo(usd, 1.09);
+
+        Console.WriteLine("\n--- Курс RUB к UAN ---");
+        rub.ShowRateTo(uan, 0.082);
+
+        Console.WriteLine("\n--- Курс PESO к USD ---");
+        peso.ShowRateTo(usd, 0.058);
+
+        Console.WriteLine("\n--- Курс EUR к RUB (через объект EUR) ---");
+        eur.ShowRateTo(rub, 100.20);
+
+        Console.WriteLine("\n--- курс USD к PESO ---");
+        usd.ShowRateTo(peso, 17.25);
+    }
+
+    static void password_check()
+    {
+        Console.WriteLine(
+            "=== Проверка пароля ===\n" +
+            "Необходимо: длина 5 символов, ровно 3 цифры, ровно 1 спецсимвол (!@#$%^&*()-+=)\n"
+        );
+
+        string password;
+        bool isValid;
+
+        do
+        {
+            Console.Write("Введите пароль: ");
+            password = Console.ReadLine() ?? "";
+            isValid = true;
+
+            if (password.Length != 5)
+            {
+                Console.WriteLine("Ошибка: пароль должен содержать ровно 5 символов.");
+                isValid = false;
+                continue;
+            }
+
+            int dCount = 0;
+            int sCount = 0;
+            int lCount = 0;
+
+            foreach (char c in password)
+            {
+                if (char.IsDigit(c))
+                    dCount++;
+                else if (IsSpecialChar(c))
+                    sCount++;
+                else if (char.IsLetter(c))
+                    lCount++;
+                else
+                {
+                    Console.WriteLine($"Ошибка: недопустимый символ '{c}'. Можно использовать цифры, спецсимволы и буквы.");
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (!isValid) continue;
+
+            if (dCount != 3)
+            {
+                Console.WriteLine($"Ошибка: должно быть ровно 3 цифры. У вас {dCount}.");
+                isValid = false;
+            }
+            else if (sCount != 1)
+            {
+                Console.WriteLine($"Ошибка: должен быть ровно 1 спецсимвол. У вас {sCount}.");
+                isValid = false;
+            }
+            else if (lCount != 1)
+            {
+                Console.WriteLine($"Ошибка: оставшийся символ должен быть буквой. У вас букв: {lCount}.");
+                isValid = false;
+            }
+
+            if (!isValid)
+                Console.WriteLine("Попробуйте снова.\n");
+
+        } while (!isValid);
+
+        Console.WriteLine("\nПароль принят!");
+    }
+
+    static bool IsSpecialChar(char c)
+    {
+        string specialChars = "!@#$%^&*()-_=+[]{};:'\"\\|,.<>/?`~";
+        return specialChars.Contains(c);
     }
 }
