@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
@@ -99,6 +99,335 @@ class Bank
         }
         Console.WriteLine($"Баланс счёта: {money} руб");
     }
+}
+
+class TestMoney
+{
+    public string Name;
+    public int Value;
+
+    public TestMoney(int value, string name)
+    {
+        Value = value;
+        Name = name;
+    }
+
+    public TestMoney add(TestMoney other)
+    {
+        if (Name != other.Name) Console.WriteLine("Ошибка: разные вылюты");
+        return new TestMoney(Value + other.Value, Name);
+    }
+
+    public TestMoney sub(TestMoney other)
+    {
+        if (Name != other.Name) Console.WriteLine("Ошибка: разные вылюты");
+        return new TestMoney(Value - other.Value, Name);
+    }
+
+    public TestMoney div(TestMoney other)
+    {
+        if (Name != other.Name) Console.WriteLine("Ошибка: разные вылюты");
+        if (other.Value == 0)
+        {
+            Console.WriteLine("Ошибка: на 0 делить нельзя!");
+            return other;
+        }
+        return new TestMoney(Value / other.Value, Name);
+    }
+
+    public TestMoney mul(TestMoney other)
+    {
+        if (Name != other.Name) Console.WriteLine("Ошибка: разные вылюты");
+        return new TestMoney(Value * other.Value, Name);
+    }
+
+
+    public static TestMoney operator +(TestMoney a, TestMoney b)
+    {
+        return a.add(b);
+    }
+
+    public static TestMoney operator -(TestMoney a, TestMoney b)
+    {
+        return a.sub(b);
+    }
+
+    public static TestMoney operator /(TestMoney a, TestMoney b)
+    {
+        return a.div(b);
+    }
+
+    public static TestMoney operator *(TestMoney a, TestMoney b)
+    {
+        return a.mul(b);
+    }
+}
+
+class ArrayTwo
+{
+    public int[,] Array;
+
+    public ArrayTwo(int[,] array)
+    {
+        Array = array;
+    }
+
+    public ArrayTwo add(ArrayTwo other)
+    {
+        for (int i = 0; i < Array.Length; i++){
+            for (int j = 0; j < Array.Length; j++)
+            {
+                Array[i, j] += other.Array[i, j];
+            }
+        }
+        return new ArrayTwo(Array);
+    }
+
+    public ArrayTwo sub(ArrayTwo other)
+    {
+        for (int i = 0; i < Array.Length; i++)
+        {
+            for (int j = 0; j < Array.Length; j++)
+            {
+                Array[i, j] -= other.Array[i, j];
+            }
+        }
+        return new ArrayTwo(Array);
+    }
+
+    public ArrayTwo mul(ArrayTwo other)
+    {
+        for (int i = 0; i < Array.Length; i++)
+        {
+            for (int j = 0; j < Array.Length; j++)
+            {
+                Array[i, j] *= other.Array[i, j];
+            }
+        }
+        return new ArrayTwo(Array);
+    }
+
+    public ArrayTwo div(ArrayTwo other)
+    {
+        for (int i = 0; i < Array.Length; i++)
+        {
+            for (int j = 0; j < Array.Length; j++)
+            {
+                if (other.Array[i, j] != 0) Array[i, j] /= other.Array[i, j];
+                else Array[i, j] = 0;
+            }
+        }
+        return new ArrayTwo(Array);
+    }
+
+    public static ArrayTwo operator +(ArrayTwo a, ArrayTwo b)
+    {
+        return a.add(b);
+    }
+
+    public static ArrayTwo operator -(ArrayTwo a, ArrayTwo b)
+    {
+        return a.sub(b);
+    }
+
+    public static ArrayTwo operator *(ArrayTwo a, ArrayTwo b)
+    {
+        return a.mul(b);
+    }
+
+    public static ArrayTwo operator /(ArrayTwo a, ArrayTwo b)
+    {
+        return a.div(b);
+    }
+}
+
+internal class TimeAtomic
+{
+    public int Hour;
+    public int Minute;
+
+
+    public TimeAtomic(int hour, int minute)
+    {
+        Hour = hour;
+        Minute = minute;
+    }
+
+    public static bool operator >(TimeAtomic a, TimeAtomic b)
+    {
+        int af = a.Hour * 60 + a.Minute;
+        int bf = b.Hour * 60 + b.Minute;
+        if (af > bf) return true;
+        else return false;
+    }
+
+    public static bool operator <(TimeAtomic a, TimeAtomic b)
+    {
+        int af = a.Hour * 60 + a.Minute;
+        int bf = b.Hour * 60 + b.Minute;
+        if (af < bf) return true;
+        else return false;
+    }
+
+    public static bool operator ==(TimeAtomic a, TimeAtomic b)
+    {
+        int af = a.Hour * 60 + a.Minute;
+        int bf = b.Hour * 60 + b.Minute;
+        if (af == bf) return true;
+        else return false;
+    }
+
+    public static bool operator !=(TimeAtomic a, TimeAtomic b)
+    {
+        int af = a.Hour * 60 + a.Minute;
+        int bf = b.Hour * 60 + b.Minute;
+        if (af != bf) return true;
+
+        else return false;
+    }
+}
+
+class OperatorPatches
+{
+    public int a, b, c;
+    public OperatorPatches(int a, int b, int c)
+    {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+
+    public static OperatorPatches operator ++(OperatorPatches part)
+    {
+        part.c++;
+        return part;
+    }
+
+    public static OperatorPatches operator +(OperatorPatches part, int p)
+    {
+        switch (p)
+        {
+            case 1:
+                part.a++;
+                return part;
+            case 2:
+                part.b++;
+                return part;
+            case 3:
+                part.c++;
+                return part;
+            default:
+                return part;
+        }
+    }
+
+    public static OperatorPatches operator -(OperatorPatches part, int p)
+    {
+        switch (p)
+        {
+            case 1:
+                part.a--;
+                return part;
+            case 2: 
+                part.b--;
+                return part;
+            case 3:
+                part.c--;
+                return part;
+            default:
+                return part;
+        }
+    }
+
+    public static bool operator >(OperatorPatches patch1, OperatorPatches patch2)
+    {
+       if (patch1.a > patch2.a)
+            return true;
+       else if (patch1.a <= patch2.a)
+            if (patch1.a == patch2.a)
+                if (patch1.b > patch2.b)
+                    return true;
+                else if (patch1.b <= patch2.b)
+                    if (patch1.b == patch2.b)
+                        if (patch1.c > patch2.c)
+                            return true;
+                        else return false;
+    }
+
+    public static bool operator <(OperatorPatches patch1, OperatorPatches patch2)
+    {
+        if (patch1.a < patch2.a)
+            return true;
+        else if (patch1.a >= patch2.a)
+            if (patch1.a == patch2.a)
+                if (patch1.b < patch2.b)
+                    return true;
+                else if (patch1.b >= patch2.b)
+                    if (patch1.b == patch2.b)
+                        if (patch1.c < patch2.c)
+                            return true;
+                        else return false;
+    }
+
+    public static bool operator ==(OperatorPatches patch1, OperatorPatches patch2)
+    {
+        if (patch1.a == patch2.a && patch1.b == patch2.b && patch1.c == patch2.c)
+            return true;
+        else return false;
+    }
+
+    public static bool operator !=(OperatorPatches patch1, OperatorPatches patch2)
+    {
+        if (patch1.a != patch2.a || patch1.b != patch2.b || patch1.c != patch2.c)
+            return true;
+        else return false;
+    }
+}
+
+
+class MainBank
+{
+    private string name;
+    private int balance;
+    public MainBank(string name, int balance)
+    {
+        this.name = name;
+        this.balance = balance;
+    }
+
+    public void deposit(UserMainBank user, int amount)
+    {
+        user.balance += amount;
+        Console.WriteLine($"{user.name} положил {amount}$");
+    }
+
+    public void withdraw(UserMainBank user, int amount)
+    {
+        user.balance -= amount;
+        Console.WriteLine($"{user.name} снял {amount}$");
+    }
+
+    public void transaction(UserMainBank user1, UserMainBank user2, int amount)
+    {
+        if (user1.balance >= amount)
+        {
+            user1.balance -= amount;
+            user2.balance += amount;
+            Console.WriteLine($"{user1.name} перевёл {user2.name} {amount}$");
+        }
+        else Console.WriteLine($"У {user1.name} недостаточно средст на балансе для перевода {amount}$");
+        user1.show(user1);
+    }
+
+    public void show(UserMainBank user)
+    {
+        Console.WriteLine($"Баланс {user.name}: {user.balance}$");
+    }
+}
+
+class UserMainBank : MainBank
+{
+    public UserMainBank(string name_c, int balance_c) : base(name_c, balance_c){}
 }
 
 class Matrix
@@ -637,7 +966,14 @@ internal class Program
                 "33. Симулятор плохого программиста (специально пишем код с ошибками и ловим их)\n" +
                 "34. Калькулятор с обработчиками ошибок\n" +
                 "35. Банк с перехватом ошибок\n" +
-                "36. Вывод hw из другого файла\n");
+                "36. Вывод hw из другого файла\n" +
+                "37. Калькулятор с обработкой ошибок в другом файле\n" +
+                "38. Банк из родительского и дочерного классов\n" +
+                "39. Перегрузка операторов\n" +
+                "40. Перугрузка двумерного вектора\n" +
+                "41. Перегрузка условных операторов (просто есть)\n" +
+                "42. Перегрузка условных операторов для патчей\n"
+            );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
 
@@ -841,6 +1177,26 @@ internal class Program
                     {
                         Console.WriteLine($"Неизвестная ошибка: {ex.Message}");
                     }
+                    continue;
+                case 38:
+                    fill_char('~', 30);
+                    // dodelat
+                    continue;
+                case 39:
+                    fill_char('~', 30);
+                    atomic_operators();
+                    continue;
+                case 40:
+                    fill_char('~', 30);
+                    atomic_array_two();
+                    continue;
+                case 41:
+                    fill_char('~', 30);
+                    atomic_operators();
+                    continue;
+                case 42:
+                    fill_char('~', 30);
+                    patch_operators();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -2149,5 +2505,113 @@ internal class Program
                 Console.WriteLine($"{e.GetType().Name}: {e.Message}, {e.TargetSite}");
             }
         }
+    }
+
+    static void atomic_operators()
+    {
+        int a = 20;
+        int b = 10;
+
+        TestMoney ad = new TestMoney(a, "rub");
+        TestMoney bd = new TestMoney(b, "rub");
+        Console.WriteLine(
+            $"Add: {ad.Value + bd.Value}\n" +
+            $"Sub: {ad.Value - bd.Value}\n" +
+            $"Mul: {ad.Value * bd.Value}\n" +
+            $"Div: {ad.Value / bd.Value}"
+        );
+    }
+
+    static void atomic_array_two()
+    {
+        int[,] arr1 = new int[,] { 
+            { 1, 2, 3 }, 
+            { 4, 5, 6 }
+        };
+        int[,] arr2 = new int[,] {
+            { 6, 5, 4 },
+            { 3, 2, 1 }
+        };
+
+        ArrayTwo ad = new ArrayTwo(arr1);
+        ArrayTwo bd = new ArrayTwo(arr2);
+        for (int i = 0; i < arr1.Length; i++)
+        {
+            Console.Write("{ ");
+            for (int j = 0; j < arr2.Length; j++)
+            {
+                if (j < arr2.Length - 1) Console.Write($"{ad.Array[i, j] + bd.Array[i, j]}, ");
+                else Console.Write($"{ad.Array[i, j] + bd.Array[i, j]}");
+            }
+            Console.WriteLine("}");
+        }
+    }
+
+    static void patch_operators()
+    {
+        int choice;
+        int patch;
+        int cp;
+        OperatorPatches patch1 = new OperatorPatches(1, 0, 0);
+        OperatorPatches patch2 = new OperatorPatches(1, 2, 0);
+        while (true)
+        {
+            Console.WriteLine(
+                "Patches: 1, 2\n" +
+                "Actions:\n" +
+                "1. version++\n" +
+                "2. version+ patch\n" +
+                "3. v > v\n" +
+                "4. v < v\n" +
+                "5. v == v\n" +
+                "6. v != v"
+            );
+            Console.Write("> ");
+            choice = int.Parse(Console.ReadLine() ?? "");
+            Console.Write("Patch: ");
+            patch = int.Parse(Console.ReadLine() ?? "");
+            switch (choice)
+            {
+                case 1:
+                    if (patch == 1) patch1++;
+                    else if (patch == 2) patch2++;
+                    continue;
+                case 2:
+                    if (patch == 1)
+                    {
+                        Console.Write("Part: ");
+                        cp = int.Parse(Console.ReadLine() ?? "");
+                        if (cp == 1) patch1.a += 1;
+                        else if (cp == 2) patch1.b += 1;
+                        else if (cp == 3) patch1.c += 1;
+                    }
+                    else if (patch == 2)
+                    {
+                        Console.Write("Part: ");
+                        cp = int.Parse(Console.ReadLine() ?? "");
+                        if (cp == 1) patch2.a += 1;
+                        else if (cp == 2) patch2.b += 1;
+                        else if (cp == 3) patch2.c += 1;
+                    }
+                    continue;
+                case 3:
+                    continue;
+                case 4:
+                    continue;
+                case 5:
+                    continue;
+                case 6:
+                    continue;
+                case 0:
+                    break;
+                default:
+                    continue;
+            }
+            Console.WriteLine(
+                $"Patch1: {patch1.a}.{patch1.b}.{patch1.c}\n" +
+                $"Patch2: {patch2.a}.{patch2.b}.{patch2.c}\n"
+            );
+        }
+        
     }
 }
