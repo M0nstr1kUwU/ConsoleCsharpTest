@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
+using System.Collections.Generic;
 using static System.Net.Mime.MediaTypeNames;
 using ClassTest.Class1NS;
 using ClassTest.CalculatorNS;
@@ -42,6 +43,264 @@ class Student
         }
 
         return age;
+    }
+}
+
+class Diary
+{
+    private Dictionary<DateTime, string> notes = new Dictionary<DateTime, string>();
+
+    public string this[DateTime date]
+    {
+        get
+        {
+            date = date.Date;
+
+            if (notes.ContainsKey(date)) return notes[date];
+            else return "Пусто";
+        }
+
+        set
+        {
+            date = date.Date;
+            notes[date] = value;
+        }
+    }
+}
+
+class StudentTest
+{
+    private string name;
+    private int age;
+    private double averageGrade;
+
+    public StudentTest(string name, int age, double averageGrade)
+    {
+        Name = name;
+        Age = age;
+        AverageGrade = averageGrade;
+    }
+
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
+
+        set
+        {
+            if (value == null || value == string.Empty)
+            {
+                Console.WriteLine("Ошибка: имя не может быть пустым");
+                name = "Unknown";
+            }
+            else
+            {
+                name = value;
+            }
+        }
+    }
+
+    public int Age
+    {
+        get
+        {
+            return age;
+        }
+
+        set
+        {
+            if (value < 16 || value > 100)
+            {
+                Console.WriteLine("Ошибка: возраст должен быть от 16 до 100");
+                age = 16;
+            }
+            else
+            {
+                age = value;
+            }
+        }
+    }
+
+    public double AverageGrade
+    {
+        get
+        {
+            return averageGrade;
+        }
+
+        set
+        {
+            if (value < 0 || value > 5)
+            {
+                Console.WriteLine("Ошибка: оценка должна быть от 0 до 5");
+                averageGrade = 0;
+            }
+            else averageGrade = value;
+        }
+    }
+}
+
+class NumArray
+{
+    private int[] Array;
+
+    public NumArray(int[] array)
+    {
+        Array = array;
+    }
+
+    public int this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= Array.Length)
+            {
+                Console.WriteLine("Ошибка: выход за рамки массива");
+                return 0;
+            }
+            else
+            {
+                return Array[index];
+            }
+        }
+
+        set
+        {
+            if (index < 0 || index >= Array.Length)
+            {
+                Console.WriteLine("Ошибка: выход за рамки массива");
+                return;
+            }
+            else
+            {
+                Array[index] = value;
+            }
+        }
+    }
+
+    public int max
+    {
+        get
+        {
+            if (Array.Length == 0)
+            {
+                Console.WriteLine("Ошибка: массив пустой");
+                return 0;
+            }
+
+            int result = Array[0];
+
+            for (int i = 0; i < Array.Length; i++)
+            {
+                if (Array[i] > result)
+                {
+                    result = Array[i];
+                }
+            }
+
+            return result;
+        }
+    }
+
+    public int min
+    {
+        get
+        {
+            if (Array.Length == 0)
+            {
+                Console.WriteLine("Ошибка: массив пустой");
+                return 0;
+            }
+
+            int result = Array[0];
+
+            for (int i = 0; i < Array.Length; i++)
+            {
+                if (Array[i] < result)
+                {
+                    result = Array[i];
+                }
+            }
+
+            return result;
+        }
+    }
+}
+
+class NumMatrix
+{
+    private int[,] Array;
+
+    public NumMatrix(int rows, int cols)
+    {
+        Array = new int[rows, cols];
+    }
+
+    public int this[int i, int j]
+    {
+        get
+        {
+            if (i < 0 || i >= Array.GetLength(0) || j < 0 || j >= Array.GetLength(1))
+            {
+                Console.WriteLine("Ошибка: выход за рамки двумерного массива");
+                return 0;
+            }
+            else
+            {
+                return Array[i, j];
+            }
+        }
+
+        set
+        {
+            if (i < 0 || i >= Array.GetLength(0) || j < 0 || j >= Array.GetLength(1))
+            {
+                Console.WriteLine("Ошибка: выход за рамки двумерного массива");
+                return;
+            }
+
+            if (value > 10)
+            {
+                Console.WriteLine("Ошибка: нельзя ввести число больше 10");
+                return;
+            }
+
+            Array[i, j] = value;
+        }
+    }
+
+    public int sum
+    {
+        get
+        {
+            int result = 0;
+
+            for (int i = 0; i < Array.GetLength(0); i++)
+            {
+                for (int j = 0; j < Array.GetLength(1); j++)
+                {
+                    result += Array[i, j];
+                }
+            }
+
+            return result;
+        }
+    }
+
+    public double avarage
+    {
+        get
+        {
+            if (Array.Length == 0)
+            {
+                Console.WriteLine("Ошибка: массив пустой");
+                return 0;
+            }
+
+            return (double)sum / Array.Length;
+        }
     }
 }
 
@@ -2952,4 +3211,6 @@ internal class Program
         string specialChars = "!@#$%^&*()-_=+[]{};:'\"\\|,.<>/?`~";
         return specialChars.Contains(c);
     }
+
+
 }
