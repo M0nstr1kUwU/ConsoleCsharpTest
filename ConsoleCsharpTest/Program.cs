@@ -1303,7 +1303,8 @@ internal class Program
                 "41. Перегрузка условных операторов (просто есть)\n" +
                 "42. Перегрузка условных операторов для патчей\n" +
                 "43. Курсы валют (наследование Exchange)\n" +
-                "44. Проверка пароля\n"
+                "44. Проверка пароля\n" +
+                "45. Сбор слова из частей текста разных файлов\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1536,6 +1537,10 @@ internal class Program
                 case 44:
                     fill_char('~', 30);
                     password_check();
+                    continue;
+                case 45:
+                    fill_char('~', 30);
+                    collect_word_from_files();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -3212,5 +3217,14 @@ internal class Program
         return specialChars.Contains(c);
     }
 
+    static void collect_word_from_files()
+    {
+        WordPart1 part1 = new WordPart1();
+        WordPart2 part2 = new WordPart2();
+        WordPart3 part3 = new WordPart3();
 
+        string word = part1.Text + part2.Text + part3.Text;
+
+        Console.WriteLine(word);
+    }
 }
