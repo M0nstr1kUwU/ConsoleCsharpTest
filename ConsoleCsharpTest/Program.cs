@@ -46,6 +46,197 @@ class Student
     }
 }
 
+public interface IFigure
+{
+    double GetArea();
+    double GetPerimeter();
+}
+
+public class Circle : IFigure
+{
+    private double radius;
+
+    public Circle(double radius)
+    {
+        this.radius = radius;
+    }
+
+    public double GetArea()
+    {
+        return Math.PI * radius * radius;
+    }
+
+    public double GetPerimeter()
+    {
+        return 2 * Math.PI * radius;
+    }
+}
+
+public class Square : IFigure
+{
+    private double side;
+
+    public Square(double side)
+    {
+        this.side = side;
+    }
+
+    public double GetArea()
+    {
+        return side * side;
+    }
+
+    public double GetPerimeter()
+    {
+        return 4 * side;
+    }
+}
+
+public class Triangle : IFigure
+{
+    private double sA, sB, sC;
+
+    public Triangle(double a, double b, double c)
+    {
+        sA = a;
+        sB = b;
+        sC = c;
+    }
+
+    public double GetArea()
+    {
+        double s = (sA + sB + sC) / 2;
+        return Math.Sqrt(s * (s - sA) * (s - sB) * (s - sC));
+    }
+
+    public double GetPerimeter()
+    {
+        return sA + sB + sC;
+    }
+}
+
+public interface IVehicle
+{
+    void Start();
+    void Stop();
+    double GetSpeed();
+}
+
+public class Car : IVehicle
+{
+    private double speed;
+    private const double defaultSpeed = 60.0;
+
+    public void Start()
+    {
+        speed = defaultSpeed;
+        Console.WriteLine("Автомобиль поехал.");
+    }
+
+    public void Stop()
+    {
+        speed = 0;
+        Console.WriteLine("Автомобиль остановился.");
+    }
+
+    public double GetSpeed()
+    {
+        return speed;
+    }
+}
+
+public class Bicycle : IVehicle
+{
+    private double speed;
+    private const double defaultSpeed = 20.0;
+
+    public void Start()
+    {
+        speed = defaultSpeed;
+        Console.WriteLine("Велосипед поехал.");
+    }
+
+    public void Stop()
+    {
+        speed = 0;
+        Console.WriteLine("Велосипед остановился.");
+    }
+
+    public double GetSpeed()
+    {
+        return speed;
+    }
+}
+
+public class Boat : IVehicle
+{
+    private double speed;
+    private const double defaultSpeed = 30.0;
+
+    public void Start()
+    {
+        speed = defaultSpeed;
+        Console.WriteLine("Лодка поплыла.");
+    }
+
+    public void Stop()
+    {
+        speed = 0;
+        Console.WriteLine("Лодка остановилась.");
+    }
+
+    public double GetSpeed()
+    {
+        return speed;
+    }
+}
+
+public class Airplane : IVehicle
+{
+    private double speed;
+    private const double defaultSpeed = 500.0;
+
+    public void Start()
+    {
+        speed = defaultSpeed;
+        Console.WriteLine("Самолёт взлетел.");
+    }
+
+    public void Stop()
+    {
+        speed = 0;
+        Console.WriteLine("Самолёт приземлился.");
+    }
+
+    public double GetSpeed()
+    {
+        return speed;
+    }
+}
+
+public class Train : IVehicle
+{
+    private double speed;
+    private const double defaultSpeed = 100.0;
+
+    public void Start()
+    {
+        speed = defaultSpeed;
+        Console.WriteLine("Поезд отправился.");
+    }
+
+    public void Stop()
+    {
+        speed = 0;
+        Console.WriteLine("Поезд остановился.");
+    }
+
+    public double GetSpeed()
+    {
+        return speed;
+    }
+}
+
 class Diary
 {
     private Dictionary<DateTime, string> notes = new Dictionary<DateTime, string>();
@@ -433,7 +624,8 @@ class ArrayTwo
 
     public ArrayTwo add(ArrayTwo other)
     {
-        for (int i = 0; i < Array.Length; i++){
+        for (int i = 0; i < Array.Length; i++)
+        {
             for (int j = 0; j < Array.Length; j++)
             {
                 Array[i, j] += other.Array[i, j];
@@ -587,7 +779,7 @@ class OperatorPatches
             case 1:
                 part.a--;
                 return part;
-            case 2: 
+            case 2:
                 part.b--;
                 return part;
             case 3:
@@ -681,7 +873,7 @@ class MainBank
 
 class UserMainBank : MainBank
 {
-    public UserMainBank(string name_c, int balance_c) : base(name_c, balance_c){}
+    public UserMainBank(string name_c, int balance_c) : base(name_c, balance_c) { }
 }
 
 class Matrix
@@ -759,18 +951,18 @@ class Vehicle
     }
 }
 
-class Bicycle : Vehicle
+class vBicycle : Vehicle
 {
-    public Bicycle(int speed, int time, int distance = 0) : base(speed + 1, time + 1, distance + 1) { }
+    public vBicycle(int speed, int time, int distance = 0) : base(speed + 1, time + 1, distance + 1) { }
     public override void move(Vehicle f)
     {
         base.move(f);
     }
 }
 
-class Car : Vehicle
+class vCar : Vehicle
 {
-    public Car(int speed, int time, int distance = 0) : base(speed + 10, time, distance) { }
+    public vCar(int speed, int time, int distance = 0) : base(speed + 10, time, distance) { }
 
     public override void move(Vehicle f)
     {
@@ -2628,8 +2820,8 @@ internal class Program
         Console.Write("Time: ");
         int t = int.Parse(Console.ReadLine() ?? "");
         Vehicle A = new Vehicle(s, t);
-        Bicycle B = new Bicycle(s, t);
-        Car C = new Car(s, t);
+        vBicycle B = new vBicycle(s, t);
+        vCar C = new vCar(s, t);
 
         while (true)
         {
@@ -2868,8 +3060,8 @@ internal class Program
 
     static void atomic_array_two()
     {
-        int[,] arr1 = new int[,] { 
-            { 1, 2, 3 }, 
+        int[,] arr1 = new int[,] {
+            { 1, 2, 3 },
             { 4, 5, 6 }
         };
         int[,] arr2 = new int[,] {
@@ -3226,5 +3418,45 @@ internal class Program
         string word = part1.Text + part2.Text + part3.Text;
 
         Console.WriteLine(word);
+    }
+
+    static void fasf()
+    {
+        Console.WriteLine("Транспорт: \n" +
+            "1 - Автомобиль\n" +
+            "2 - Велосипед\n" +
+            "3 - Лодка\n" +
+            "4 - Самолёт\n"+ 
+            "5 - Поезд"
+        );
+        Console.Write(">: ");
+        string choice = Console.ReadLine() ?? "";
+        IVehicle vehicle = null;
+        switch (choice)
+        {
+            case "1":
+                vehicle = new Car();
+                break;
+            case "2":
+                vehicle = new Bicycle();
+                break;
+            case "3":
+                vehicle = new Boat();
+                break;
+            case "4":
+                vehicle = new Airplane();
+                break;
+            case "5":
+                vehicle = new Train();
+                break;
+            default:
+                Console.WriteLine("Неверный выбор.");
+                return;
+        }
+
+        vehicle.Start();
+        Console.WriteLine($"Текущая скорость: {vehicle.GetSpeed()} км/ч");
+
+        vehicle.Stop();
     }
 }
