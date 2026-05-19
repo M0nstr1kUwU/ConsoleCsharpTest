@@ -1,13 +1,109 @@
+using ClassTest.CalculatorNS;
+using ClassTest.Class1NS;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Linq.Expressions;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
-using System.Collections.Generic;
 using static System.Net.Mime.MediaTypeNames;
-using ClassTest.Class1NS;
-using ClassTest.CalculatorNS;
-using System.Data.Common;
+
+
+public struct VectorМ
+{
+    public double X;
+    public double Y;
+
+    public VectorМ(double x, double y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    public double Length()
+    {
+        return Math.Sqrt(X * X + Y * Y);
+    }
+
+    public VectorМ Normalize()
+    {
+        double len = Length();
+        if (len == 0)
+            return new VectorМ(0, 0);
+        return new VectorМ(X / len, Y / len);
+    }
+
+    public VectorМ Add(VectorМ other)
+    {
+        return new VectorМ(X + other.X, Y + other.Y);
+    }
+        
+    public static VectorМ operator +(VectorМ a, VectorМ b)
+    {
+        return a.Add(b);
+    }
+}
+
+public struct MoneyM
+{
+    public double RUB;
+    public int KOP;
+
+    public MoneyM(double rub, int kop)
+    {
+        RUB = rub;
+        KOP = kop;
+        Normalize();
+    }
+
+    private void Normalize()
+    {
+        RUB += KOP / 100;
+        KOP = KOP % 100;
+
+        if (KOP < 0)
+        {
+            RUB -= 1;
+            KOP += 100;
+        }
+    }
+
+    public double ToRub()
+    {
+        return RUB + KOP / 100.0;
+    }
+
+    public MoneyM Add(MoneyM other)
+    {
+        double nRub = RUB + other.RUB;
+        int nKop = KOP + other.KOP;
+        return new MoneyM(nRub, nKop);
+    }
+
+    public MoneyM Subtract(MoneyM other)
+    {
+        double nRub = RUB - other.RUB;
+        int nKop = KOP - other.KOP;
+        return new MoneyM(nRub, nKop);
+    }
+
+    public static MoneyM operator +(MoneyM a, MoneyM b)
+    {
+        return a.Add(b);
+    }
+
+    public static MoneyM operator -(MoneyM a, MoneyM b)
+    {
+        return a.Subtract(b);
+    }
+
+    public override string ToString()
+    {
+        return $"{RUB},{KOP:D2}";
+    }
+}
 
 class Student
 {
@@ -1496,7 +1592,9 @@ internal class Program
                 "42. Перегрузка условных операторов для патчей\n" +
                 "43. Курсы валют (наследование Exchange)\n" +
                 "44. Проверка пароля\n" +
-                "45. Сбор слова из частей текста разных файлов\n"
+                "45. Сбор слова из частей текста разных файлов\n" +
+                "46. VectorM (длина, сложение, нормализация)\n" +
+                "47. MoneyM (конвертация в рубли, сложение, вычитание)\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1733,6 +1831,14 @@ internal class Program
                 case 45:
                     fill_char('~', 30);
                     collect_word_from_files();
+                    continue;
+                case 46:
+                    fill_char('~', 30);
+                    word_with_vector_m();
+                    continue;
+                case 47:
+                    fill_char('~', 30);
+                    word_with_money_m();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -3426,7 +3532,7 @@ internal class Program
             "1 - Автомобиль\n" +
             "2 - Велосипед\n" +
             "3 - Лодка\n" +
-            "4 - Самолёт\n"+ 
+            "4 - Самолёт\n" +
             "5 - Поезд"
         );
         Console.Write(">: ");
@@ -3458,5 +3564,44 @@ internal class Program
         Console.WriteLine($"Текущая скорость: {vehicle.GetSpeed()} км/ч");
 
         vehicle.Stop();
+    }
+
+    static void word_with_vector_m()
+    {
+        VectorМ v1 = new VectorМ(3, 4);
+        VectorМ v2 = new VectorМ(1, 2);
+
+        double length1 = v1.Length();
+        Console.WriteLine($"Длина v1: {length1}");
+
+        VectorМ v1norm = v1.Normalize();
+        Console.WriteLine($"Нормализация v1: ({v1norm.X}, {v1norm.Y})");
+
+        VectorМ sum = v1 + v2;
+        Console.WriteLine($"Сумма v1 и v2: ({sum.X}, {sum.Y})");
+    }
+
+    static void word_with_money_m()
+    {
+        Console.Write("Rub1: ");
+        int r1 = int.Parse(Console.ReadLine() ?? "");
+        Console.Write("Kop1: ");
+        int k1 = int.Parse(Console.ReadLine() ?? "");
+        Console.Write("Rub2: ");
+        int r2 = int.Parse(Console.ReadLine() ?? "");
+        Console.Write("Kop2: ");
+        int k2 = int.Parse(Console.ReadLine() ?? "");
+
+        MoneyM m1 = new MoneyM(r1, k1);
+        MoneyM m2 = new MoneyM(r2, k2);
+
+        Console.WriteLine($"\nM1: {m1}\n" + $"M2: {m2}\n");
+
+        MoneyM s = m1 + m2;
+        MoneyM d = m1 - m2;
+        Console.WriteLine($"Сумма: {s}\n" + $"Вычитание: {d}\n");
+
+        double r = m1.ToRub();
+        Console.WriteLine($"m1 в рублях: {r:F2}\n");
     }
 }
