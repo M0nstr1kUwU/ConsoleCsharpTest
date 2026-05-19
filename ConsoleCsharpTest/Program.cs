@@ -105,6 +105,24 @@ public struct MoneyM
     }
 }
 
+enum WeekendM
+{
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+    Sunday
+}
+
+enum TrafficLight
+{
+    Red,
+    Yellow,
+    Green
+}
+
 class Student
 {
     public string name;
@@ -1594,7 +1612,8 @@ internal class Program
                 "44. Проверка пароля\n" +
                 "45. Сбор слова из частей текста разных файлов\n" +
                 "46. VectorM (длина, сложение, нормализация)\n" +
-                "47. MoneyM (конвертация в рубли, сложение, вычитание)\n"
+                "47. MoneyM (конвертация в рубли, сложение, вычитание)\n" +
+                "48. WeekendM enum (рабочий или выходной день?)\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1840,6 +1859,21 @@ internal class Program
                     fill_char('~', 30);
                     word_with_money_m();
                     continue;
+                case 48:
+                    fill_char('~', 30);
+                    work_with_weekend_enum();
+                    continue;
+                case 49:
+                    fill_char('~', 30);
+                    TrafficLight light = TrafficLight.Red;
+                    Console.WriteLine(light);
+                    light = Next(light);
+                    Console.WriteLine(light);
+                    light = Next(light);
+                    Console.WriteLine(light);
+                    light = Next(light);
+                    Console.WriteLine(light);
+                    continue;
                 case 0:
                     fill_char('~', 30);
                     return;
@@ -1849,6 +1883,11 @@ internal class Program
                     continue;
             }
         }
+    }
+
+    static TrafficLight Next(TrafficLight current)
+    {
+        return (TrafficLight)(((int)current + 1) % 3);
     }
 
     static void fill_char(char c, int num)
@@ -3603,5 +3642,38 @@ internal class Program
 
         double r = m1.ToRub();
         Console.WriteLine($"m1 в рублях: {r:F2}\n");
+    }
+
+    static void work_with_weekend_enum()
+    {
+        static bool IsWeekend(WeekendM day)
+        {
+            return day == WeekendM.Saturday || day == WeekendM.Sunday;
+        }
+
+        static bool IsWorkDay(WeekendM day)
+        {
+            return !IsWeekend(day);
+        }
+
+        while (true)
+        {
+            Console.Write("> ");
+            string input = Console.ReadLine() ?? "";
+
+            if (Enum.TryParse(input, true, out WeekendM day))
+            {
+                if (IsWorkDay(day))
+                    Console.WriteLine($"{day} — рабочий день.");
+                else
+                    Console.WriteLine($"{day} — выходной день.");
+                break;
+            }
+            else
+            {
+                continue;
+            }
+        }
+
     }
 }
