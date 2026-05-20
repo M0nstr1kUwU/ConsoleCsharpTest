@@ -11,6 +11,45 @@ using System.Threading.Channels;
 using static System.Net.Mime.MediaTypeNames;
 
 
+delegate double MathOp(double a, double b);
+
+class PlayerDeligate
+{
+    public string Name;
+    public int health;
+    public event Action<PlayerDeligate> died;
+    public event Action<PlayerDeligate> win;
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if (health == 0)
+        {
+            died?.Invoke(this);
+        }
+    }
+
+    public void WhoWin(PlayerDeligate entity1, PlayerDeligate entity2)
+    {
+        if (entity1.health <= 0 && entity2.health > 0)
+        {
+            Console.WriteLine($"{entity2.Name} is win!");
+            win.Invoke(this);
+        }
+        else if (entity1.health > 0 && entity2.health <= 0)
+        {
+            Console.WriteLine($"{entity1.Name} is win!");
+            win.Invoke(this);
+        }
+        else if (entity1.health <= 0 && entity2.health <= 0)
+        {
+            Console.WriteLine($"No one is win!");
+            win.Invoke(this);
+        }
+    }
+
+}
+
 public struct VectorМ
 {
     public double X;
@@ -1613,7 +1652,11 @@ internal class Program
                 "45. Сбор слова из частей текста разных файлов\n" +
                 "46. VectorM (длина, сложение, нормализация)\n" +
                 "47. MoneyM (конвертация в рубли, сложение, вычитание)\n" +
-                "48. WeekendM enum (рабочий или выходной день?)\n"
+                "48. WeekendM enum (рабочий или выходной день?)\n" +
+                "49. Светофор enum\n" +
+                "50. Делегаты\n" +
+                "51. Делегитированный калькулятор\n" +
+                "52. PlayerDeligate с ивентами\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1866,13 +1909,30 @@ internal class Program
                 case 49:
                     fill_char('~', 30);
                     TrafficLight light = TrafficLight.Red;
-                    Console.WriteLine(light);
-                    light = Next(light);
-                    Console.WriteLine(light);
-                    light = Next(light);
-                    Console.WriteLine(light);
-                    light = Next(light);
-                    Console.WriteLine(light);
+                    while (true)
+                    {
+                        Console.Write("> ");
+                        Console.ReadLine();
+                        light = Next(light);
+                        Console.WriteLine(light);
+                        if (Console.ReadLine() == "1")
+                        {
+                            break;
+                        }
+                    }
+                    continue;
+
+                case 50:
+                    fill_char('~', 30);
+                    delegati_test();
+                    continue;
+                case 51:
+                    fill_char('~', 30);
+                    delegati_calculator();
+                    continue;
+                case 52:
+                    fill_char('~', 30);
+
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -3674,6 +3734,85 @@ internal class Program
                 continue;
             }
         }
+    }
 
+    static void delegati_test()
+    {
+        int[] Filter(int[] arr, Predicate<int> condition)
+        {
+            List<int> result = new List<int>();
+            foreach (int i in arr)
+            {
+                if (condition(i))
+                    result.Add(i);
+            }
+            return result.ToArray();
+        }
+
+        int[] num = { 1, 2, 3, 4, 5, 6, };
+        int[] events = Filter(num, n => n % 2 == 0);
+        int[] test1 = Filter(num, n => n > 0);
+        int[] test2 = Filter(num, n => n * 3 == 27);
+        int[] test3 = Filter(num, n => n % 5 != 0);
+    }
+
+    static void delegati_calculator()
+    {
+        while (true)
+        {
+            Console.Write("\nN1: ");
+            if (!double.TryParse(Console.ReadLine(), out double x)) break;
+
+            Console.Write("OP (+, -, *, /): ");
+            string op = Console.ReadLine() ?? "";
+
+            Console.Write("N2: ");
+            if (!double.TryParse(Console.ReadLine(), out double y)) break;
+
+            MathOp operation = null;
+
+            switch (op)
+            {
+                case "+":
+                    operation = (a, b) => a + b;
+                    break;
+                case "-":
+                    operation = (a, b) => a - b;
+                    break;
+                case "*":
+                    operation = (a, b) => a * b;
+                    break;
+                case "/":
+                    operation = (a, b) =>
+                    {
+                        if (b == 0)
+                            throw new DivideByZeroException("Делить на 0 нельзя, д@бил!");
+                        return a / b;
+                    };
+                    break;
+                default:
+                    Console.WriteLine("Неверный оператор!");
+                    continue;
+            }
+
+            try
+            {
+                double result = operation(x, y);
+                Console.WriteLine($"Результат: {x} {op} {y} = {result}");
+            }
+            catch (DivideByZeroException ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
+        }
+    }
+
+    static void deligate_player()
+    {
+        PlayerDeligate player = new PlayerDeligate { Name = "Lebed_HEEEEEEEroy_Cryma" };
+        PlayerDeligate boss = new PlayerDeligate { Name = "Pudge na mide" };
+
+        boss.died += dota => Console.WriteLine($"srajen {boss.Name}");
+        player.died += dota => Console.WriteLine($"srajen {player.Name}");
     }
 }
