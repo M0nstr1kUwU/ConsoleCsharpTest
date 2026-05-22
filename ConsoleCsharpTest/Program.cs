@@ -50,6 +50,9 @@ class PlayerDeligate
 
 }
 
+public record Item(string Name, double Price, DateTime Date);
+public record Order(List<Item> Items, double TotalAmount, DateTime OrderDate);
+
 public struct VectorМ
 {
     public double X;
@@ -1598,9 +1601,12 @@ internal class Program
         choice_test();
     }
 
+    static List<Item> items = new List<Item>();
+
     static void choice_test()
     {
         int choice;
+
         while (true)
         {
             fill_char('~', 30);
@@ -1656,7 +1662,8 @@ internal class Program
                 "49. Светофор enum\n" +
                 "50. Делегаты\n" +
                 "51. Делегитированный калькулятор\n" +
-                "52. PlayerDeligate с ивентами\n"
+                "52. PlayerDeligate с ивентами\n" +
+                "53. Record Order\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1933,6 +1940,44 @@ internal class Program
                 case 52:
                     fill_char('~', 30);
 
+                    continue;
+                case 53:
+                    fill_char('~', 30);
+                    bool exit = false;
+                    while (!exit)
+                    {
+                        Console.Write(
+                            "\n1. Вывести все товары\n" +
+                            "2. Добавить товар\n" +
+                            "3. Удалить товар\n" +
+                            "4. Создать заказ\n" +
+                            "5. Выход\n" +
+                            "> "
+                        );
+                        string choice1 = Console.ReadLine() ?? "";
+
+                        switch (choice1)
+                        {
+                            case "1":
+                                ShowAllItemsAsCards();
+                                break;
+                            case "2":
+                                AddItem();
+                                break;
+                            case "3":
+                                RemoveItem();
+                                break;
+                            case "4":
+                                CreateOrder();
+                                break;
+                            case "5":
+                                exit = true;
+                                break;
+                            default:
+                                Console.WriteLine("Неверный ввод");
+                                break;
+                        }
+                    }
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -3814,5 +3859,92 @@ internal class Program
 
         boss.died += dota => Console.WriteLine($"srajen {boss.Name}");
         player.died += dota => Console.WriteLine($"srajen {player.Name}");
+    }
+
+    static void ShowAllItemsAsCards()
+    {
+        Console.Clear();
+        if (items.Count == 0)
+        {
+            Console.WriteLine("Список товаров пуст\n");
+            return;
+        }
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            var item = items[i];
+
+            Console.WriteLine(
+                $"\n№{i + 1}\n" +
+                $"Название: {item.Name}\n" +
+                $"Цена: {item.Price:F2}\n" +
+                $"Добавлен: {item.Date.ToShortDateString()}\n"
+            );
+        }
+    }
+
+    static void AddItem()
+    {
+        Console.Clear();
+        Console.Write("Название: ");
+        string name = Console.ReadLine() ?? "";
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            Console.WriteLine("Имя не может быть null\n");
+            return;
+        }
+
+        Console.Write("Введите цену: ");
+        if (!double.TryParse(Console.ReadLine(), out double price))
+        {
+            Console.WriteLine("Неверная цена\n");
+            return;
+        }
+
+        items.Add(new Item(name, price, DateTime.Now));
+        Console.WriteLine("Товар добавлен\n");
+    }
+
+    static void RemoveItem()
+    {
+        if (items.Count == 0)
+        {
+            Console.WriteLine("Список пуст\n");
+            return;
+        }
+
+        Console.Clear();
+        ShowAllItemsAsCards();
+        Console.Write("\n№Товара: ");
+        if (int.TryParse(Console.ReadLine(), out int idx) && idx >= 1 && idx <= items.Count)
+        {
+            var removed = items[idx - 1];
+            items.RemoveAt(idx - 1);
+            Console.WriteLine($"Товар \"{removed.Name}\" удалён\n");
+        }
+        else
+        {
+            Console.WriteLine("Не верны1й номер\n");
+        }
+    }
+
+    static void CreateOrder()
+    {
+        if (items.Count == 0)
+        {
+            Console.WriteLine("Cписок пуст\n");
+            return;
+        }
+
+        double total = items.Sum(i => i.Price);
+        var order = new Order(new List<Item>(items), total, DateTime.Now);
+
+        Console.Clear();
+        Console.WriteLine($"Дата заказа: {order.OrderDate}" + "Товары в заказе: ");
+        foreach (var item in order.Items)
+        {
+            Console.WriteLine($"  - {item.Name} | {item.Price:F2} руб. | добавлен {item.Date.ToShortDateString()}");
+        }
+        Console.WriteLine($"К оплате: {order.TotalAmount:F2} руб\n");
     }
 }
