@@ -13,6 +13,58 @@ using static System.Net.Mime.MediaTypeNames;
 
 delegate double MathOp(double a, double b);
 
+public class AddGeneric<T>
+{
+    public T Add(T a, T b, Func<T, T, T> addition)
+    {
+        return addition(a, b);
+    }
+}
+
+public class Array<T> where T : IComparable
+{
+    private T[] Data;
+
+    public Array(T[] data)
+    {
+        Data = data;
+    }
+
+    public int Length => Data.Length;
+
+    public T this[int index]
+    {
+        get => Data[index];
+        set => Data[index] = value;
+    }
+
+    public T Min()
+    {
+        if (Data.Length == 0)
+            throw new InvalidOperationException("Массив пуст");
+        T min = Data[0];
+        for (int i = 1; i < Data.Length; i++)
+        {
+            if (Data[i].CompareTo(min) < 0)
+                min = Data[i];
+        }
+        return min;
+    }
+
+    public T Max()
+    {
+        if (Data.Length == 0)
+            throw new InvalidOperationException("Массив пуст");
+        T max = Data[0];
+        for (int i = 1; i < Data.Length; i++)
+        {
+            if (Data[i].CompareTo(max) > 0)
+                max = Data[i];
+        }
+        return max;
+    }
+}
+
 class PlayerDeligate
 {
     public string Name;
@@ -1663,7 +1715,9 @@ internal class Program
                 "50. Делегаты\n" +
                 "51. Делегитированный калькулятор\n" +
                 "52. PlayerDeligate с ивентами\n" +
-                "53. Record Order\n"
+                "53. Record Order\n" +
+                "54. AddGeneric примеры\n" +
+                "55. Array<T> с min/max\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1978,6 +2032,37 @@ internal class Program
                                 break;
                         }
                     }
+                    continue;
+                case 54:
+                    fill_char('~', 30);
+                    var iAdd = new AddGeneric<int>();
+                    int sumI = iAdd.Add(5, 3, (x, y) => x + y);
+                    Console.WriteLine($"5 + 3 = {sumI}");
+
+                    var dAdd = new AddGeneric<double>();
+                    double sumD = dAdd.Add(2.5, 1.2, (x, y) => x + y);
+                    Console.WriteLine($"2.5 + 1.2 = {sumD}");
+
+                    var sAdd = new AddGeneric<string>();
+                    string sumS = sAdd.Add("Hello, ", "World!", (x, y) => x + y);
+                    Console.WriteLine($"Hello, + World! = {sumS}");
+                    continue;
+                case 55:
+                    fill_char('~', 30);
+                    int[] ints = { 5, 2, 8, 1, 9 };
+                    var intArray = new Array<int>(ints);
+                    Console.WriteLine($"Числа: {string.Join(", ", ints)}");
+                    Console.WriteLine($"Min: {intArray.Min()}, Max: {intArray.Max()}");
+
+                    string[] strings = { "apple", "pear", "banana", "kiwi" };
+                    var stringArray = new Array<string>(strings);
+                    Console.WriteLine($"\nСтроки: {string.Join(", ", strings)}");
+                    Console.WriteLine($"Min: {stringArray.Min()}, Max: {stringArray.Max()}");
+
+                    double[] doubles = { 1.5, -2.3, 10.0, 3.14 };
+                    var doubleArray = new Array<double>(doubles);
+                    Console.WriteLine($"\nДробные числа: {string.Join(", ", doubles)}");
+                    Console.WriteLine($"Min: {doubleArray.Min()}, Max: {doubleArray.Max()}");
                     continue;
                 case 0:
                     fill_char('~', 30);
