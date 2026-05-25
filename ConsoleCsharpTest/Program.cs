@@ -1709,7 +1709,10 @@ internal class Program
                 "51. Делегитированный калькулятор\n" +
                 "52. PlayerDeligate с ивентами\n" +
                 "53. PairM очищение пространства калькулятора после использования\n" +
-                "54. StringArrayM работа с массивом (сортировка/вывод) + кол-во сборок GC"
+                "54. StringArrayM работа с массивом (сортировка/вывод) + кол-во сборок GC\n" +
+                "55. Сортировка и сохранение случайных слов в data.txt\n" +
+                "56. Сумма всех чисел из файла с сохранением\n" +
+                "57. Шифрование файла Цезарем\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1994,6 +1997,18 @@ internal class Program
                 case 54:
                     fill_char('~', 30);
                     string_array_m_gc();
+                    continue;
+                case 55:
+                    fill_char('~', 30);
+                    data_method_file_save();
+                    continue;
+                case 56:
+                    fill_char('~', 30);
+                    sum_all_num_for_file();
+                    continue;
+                case 57:
+                    fill_char('~', 30);
+                    cesar_shifr_for_save_txt();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -3924,7 +3939,7 @@ internal class Program
         arr.Print();
 
         Console.WriteLine("\nИнформация о памяти:");
-        long memory = GC.GetTotalMemory(false);
+        long memory = GC.GetTotalMemory(false);  
         Console.WriteLine($"> Занято памяти (false): {memory} байт");
         memory = GC.GetTotalMemory(true);
         Console.WriteLine($"> Занято памяти (true): {memory} байт");
@@ -3937,5 +3952,59 @@ internal class Program
 
         GC.Collect();
         GC.WaitForPendingFinalizers();
+    }
+
+    static void data_method_file_save()
+    {
+        string text = File.ReadAllText("data.txt");
+
+        string[] words = text.Split(new char[] { ' ', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+
+        Array.Sort(words, StringComparer.OrdinalIgnoreCase);
+
+        File.WriteAllLines("data1.txt", words);
+    }
+
+    static void sum_all_num_for_file()
+    {
+        Console.Write("Path file: ");
+
+        string path = Console.ReadLine() ?? "";
+
+        int sum = 0;
+
+        string text = File.ReadAllText($"{path}.txt");
+
+        string[] numbers = text.Split(
+            new char[] { ' ', '\n', '\r', '\t' },
+            StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string n in numbers)
+        {
+            sum += int.Parse(n);
+        }
+        File.WriteAllText("result.txt", $"Сумма: {sum}");
+    }
+
+    static void cesar_shifr_for_save_txt()
+    {
+        Console.Write("Шаг: ");
+        int step = int.Parse(Console.ReadLine() ?? "");
+
+        string text = File.ReadAllText("data.txt");
+
+        string result = "";
+
+        foreach (char c in text)
+        {
+            if (char.IsLetter(c))
+            {
+                char offset = char.IsUpper(c) ? 'A' : 'a';
+                char encrypted = (char)((c - offset + step) % 26 + offset);
+                result += encrypted;
+            }
+            else result += c;
+        }
+        File.WriteAllText("data1.txt", result);
     }
 }
