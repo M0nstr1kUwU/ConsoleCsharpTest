@@ -3923,8 +3923,13 @@ internal class Program
         Console.WriteLine("\nОтсортированный массив:");
         arr.Print();
 
-        Console.WriteLine("\nКоличество сборок:");
+        Console.WriteLine("\nИнформация о памяти:");
+        long memory = GC.GetTotalMemory(false);
+        Console.WriteLine($"> Занято памяти (false): {memory} байт");
+        memory = GC.GetTotalMemory(true);
+        Console.WriteLine($"> Занято памяти (true): {memory} байт");
 
+        Console.WriteLine("\nКоличество сборок:");
         for (int i = 0; i < 3; i++)
         {
             Console.WriteLine($"{i + 1}: {GC.CollectionCount(i)}");
@@ -3932,7 +3937,5 @@ internal class Program
 
         GC.Collect();
         GC.WaitForPendingFinalizers();
-
-        Console.WriteLine("\nGC Collect выполнен");
     }
 }
