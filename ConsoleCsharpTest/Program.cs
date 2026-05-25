@@ -76,6 +76,31 @@ class PairM : IDisposable
 
 record PointM(int x, int y);
 
+class StringArrayM
+{
+    private string[] data = new string[100];
+    private int count = 0;
+
+    public void Add(string value)
+    {
+        data[count] = value;
+        count++;
+    }
+
+    public void Sort()
+    {
+        Array.Sort(data, 0, count);
+    }
+        
+    public void Print()
+    {
+        for (int i = 0; i < count; i++)
+        {
+            Console.WriteLine(data[i]);
+        }
+    }
+}
+
 public struct VectorМ
 {
     public double X;
@@ -1683,7 +1708,8 @@ internal class Program
                 "50. Делегаты\n" +
                 "51. Делегитированный калькулятор\n" +
                 "52. PlayerDeligate с ивентами\n" +
-                "53. PairM очищение пространства калькулятора после использования\n"
+                "53. PairM очищение пространства калькулятора после использования\n" +
+                "54. StringArrayM работа с массивом (сортировка/вывод) + кол-во сборок GC"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1964,6 +1990,10 @@ internal class Program
                 case 53:
                     fill_char('~', 30);
                     pair_m_work();
+                    continue;
+                case 54:
+                    fill_char('~', 30);
+                    string_array_m_gc();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -3873,5 +3903,36 @@ internal class Program
 
         GC.Collect();
         GC.WaitForPendingFinalizers();
+    }
+
+    static void string_array_m_gc()
+    {
+        StringArrayM arr = new StringArrayM();
+
+        arr.Add("Orange");
+        arr.Add("Grape");
+        arr.Add("Apple");
+        arr.Add("Mango");
+        arr.Add("Bottle");
+
+        Console.WriteLine("Обычный массив:");
+        arr.Print();
+
+        arr.Sort();
+
+        Console.WriteLine("\nОтсортированный массив:");
+        arr.Print();
+
+        Console.WriteLine("\nКоличество сборок:");
+
+        for (int i = 0; i < 3; i++)
+        {
+            Console.WriteLine($"{i + 1}: {GC.CollectionCount(i)}");
+        }
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+
+        Console.WriteLine("\nGC Collect выполнен");
     }
 }
