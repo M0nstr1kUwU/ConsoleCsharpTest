@@ -13,58 +13,6 @@ using static System.Net.Mime.MediaTypeNames;
 
 delegate double MathOp(double a, double b);
 
-public class AddGeneric<T>
-{
-    public T Add(T a, T b, Func<T, T, T> addition)
-    {
-        return addition(a, b);
-    }
-}
-
-public class Array<T> where T : IComparable
-{
-    private T[] Data;
-
-    public Array(T[] data)
-    {
-        Data = data;
-    }
-
-    public int Length => Data.Length;
-
-    public T this[int index]
-    {
-        get => Data[index];
-        set => Data[index] = value;
-    }
-
-    public T Min()
-    {
-        if (Data.Length == 0)
-            throw new InvalidOperationException("Массив пуст");
-        T min = Data[0];
-        for (int i = 1; i < Data.Length; i++)
-        {
-            if (Data[i].CompareTo(min) < 0)
-                min = Data[i];
-        }
-        return min;
-    }
-
-    public T Max()
-    {
-        if (Data.Length == 0)
-            throw new InvalidOperationException("Массив пуст");
-        T max = Data[0];
-        for (int i = 1; i < Data.Length; i++)
-        {
-            if (Data[i].CompareTo(max) > 0)
-                max = Data[i];
-        }
-        return max;
-    }
-}
-
 class PlayerDeligate
 {
     public string Name;
@@ -99,11 +47,34 @@ class PlayerDeligate
             win.Invoke(this);
         }
     }
-
 }
 
-public record Item(string Name, double Price, DateTime Date);
-public record Order(List<Item> Items, double TotalAmount, DateTime OrderDate);
+class PairM : IDisposable
+{
+    public int X;
+    public int Y;
+
+    public PairM(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    public int Add() => X + Y;
+
+    public int Sub() => X - Y;
+
+    public int Mul() => X * Y;
+
+    public double Div() => (double)X / Y;
+
+    public void Dispose()
+    {
+        Console.WriteLine("Dispose: очистка ;)");
+    }
+}
+
+record PointM(int x, int y);
 
 public struct VectorМ
 {
@@ -1653,12 +1624,9 @@ internal class Program
         choice_test();
     }
 
-    static List<Item> items = new List<Item>();
-
     static void choice_test()
     {
         int choice;
-
         while (true)
         {
             fill_char('~', 30);
@@ -1715,9 +1683,7 @@ internal class Program
                 "50. Делегаты\n" +
                 "51. Делегитированный калькулятор\n" +
                 "52. PlayerDeligate с ивентами\n" +
-                "53. Record Order\n" +
-                "54. AddGeneric примеры\n" +
-                "55. Array<T> с min/max\n"
+                "53. PairM очищение пространства калькулятора после использования\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -1993,76 +1959,11 @@ internal class Program
                     continue;
                 case 52:
                     fill_char('~', 30);
-
+                    deligate_player();
                     continue;
                 case 53:
                     fill_char('~', 30);
-                    bool exit = false;
-                    while (!exit)
-                    {
-                        Console.Write(
-                            "\n1. Вывести все товары\n" +
-                            "2. Добавить товар\n" +
-                            "3. Удалить товар\n" +
-                            "4. Создать заказ\n" +
-                            "5. Выход\n" +
-                            "> "
-                        );
-                        string choice1 = Console.ReadLine() ?? "";
-
-                        switch (choice1)
-                        {
-                            case "1":
-                                ShowAllItemsAsCards();
-                                break;
-                            case "2":
-                                AddItem();
-                                break;
-                            case "3":
-                                RemoveItem();
-                                break;
-                            case "4":
-                                CreateOrder();
-                                break;
-                            case "5":
-                                exit = true;
-                                break;
-                            default:
-                                Console.WriteLine("Неверный ввод");
-                                break;
-                        }
-                    }
-                    continue;
-                case 54:
-                    fill_char('~', 30);
-                    var iAdd = new AddGeneric<int>();
-                    int sumI = iAdd.Add(5, 3, (x, y) => x + y);
-                    Console.WriteLine($"5 + 3 = {sumI}");
-
-                    var dAdd = new AddGeneric<double>();
-                    double sumD = dAdd.Add(2.5, 1.2, (x, y) => x + y);
-                    Console.WriteLine($"2.5 + 1.2 = {sumD}");
-
-                    var sAdd = new AddGeneric<string>();
-                    string sumS = sAdd.Add("Hello, ", "World!", (x, y) => x + y);
-                    Console.WriteLine($"Hello, + World! = {sumS}");
-                    continue;
-                case 55:
-                    fill_char('~', 30);
-                    int[] ints = { 5, 2, 8, 1, 9 };
-                    var intArray = new Array<int>(ints);
-                    Console.WriteLine($"Числа: {string.Join(", ", ints)}");
-                    Console.WriteLine($"Min: {intArray.Min()}, Max: {intArray.Max()}");
-
-                    string[] strings = { "apple", "pear", "banana", "kiwi" };
-                    var stringArray = new Array<string>(strings);
-                    Console.WriteLine($"\nСтроки: {string.Join(", ", strings)}");
-                    Console.WriteLine($"Min: {stringArray.Min()}, Max: {stringArray.Max()}");
-
-                    double[] doubles = { 1.5, -2.3, 10.0, 3.14 };
-                    var doubleArray = new Array<double>(doubles);
-                    Console.WriteLine($"\nДробные числа: {string.Join(", ", doubles)}");
-                    Console.WriteLine($"Min: {doubleArray.Min()}, Max: {doubleArray.Max()}");
+                    pair_m_work();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -3939,97 +3840,38 @@ internal class Program
 
     static void deligate_player()
     {
-        PlayerDeligate player = new PlayerDeligate { Name = "Lebed_HEEEEEEEroy_Cryma" };
+        PlayerDeligate player = new PlayerDeligate { Name = "Lebed_HEEEEEEEroy_Kryma" };
         PlayerDeligate boss = new PlayerDeligate { Name = "Pudge na mide" };
 
         boss.died += dota => Console.WriteLine($"srajen {boss.Name}");
         player.died += dota => Console.WriteLine($"srajen {player.Name}");
     }
 
-    static void ShowAllItemsAsCards()
+    static void pair_m_work()
     {
-        Console.Clear();
-        if (items.Count == 0)
+        Console.Write("X: ");
+        int x = Convert.ToInt32(Console.ReadLine());
+
+        Console.Write("Y: ");
+        int y = Convert.ToInt32(Console.ReadLine());
+
+        using (PairM pair = new PairM(x, y))
         {
-            Console.WriteLine("Список товаров пуст\n");
-            return;
+            Console.WriteLine($"Сумма: {pair.Add()}");
+            Console.WriteLine($"Разность: {pair.Sub()}");
+            Console.WriteLine($"Умножение: {pair.Mul()}");
+
+            if (y != 0)
+                Console.WriteLine($"Деление: {pair.Div()}");
+            else
+                Console.WriteLine("Делить на 0 НЕЛЬЗЯ, НЕУЧ");
+
+            PointM point = new PointM(x, y);
+
+            Console.WriteLine($"PointM -> X = {point.x}, Y = {point.y}");
         }
 
-        for (int i = 0; i < items.Count; i++)
-        {
-            var item = items[i];
-
-            Console.WriteLine(
-                $"\n№{i + 1}\n" +
-                $"Название: {item.Name}\n" +
-                $"Цена: {item.Price:F2}\n" +
-                $"Добавлен: {item.Date.ToShortDateString()}\n"
-            );
-        }
-    }
-
-    static void AddItem()
-    {
-        Console.Clear();
-        Console.Write("Название: ");
-        string name = Console.ReadLine() ?? "";
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            Console.WriteLine("Имя не может быть null\n");
-            return;
-        }
-
-        Console.Write("Введите цену: ");
-        if (!double.TryParse(Console.ReadLine(), out double price))
-        {
-            Console.WriteLine("Неверная цена\n");
-            return;
-        }
-
-        items.Add(new Item(name, price, DateTime.Now));
-        Console.WriteLine("Товар добавлен\n");
-    }
-
-    static void RemoveItem()
-    {
-        if (items.Count == 0)
-        {
-            Console.WriteLine("Список пуст\n");
-            return;
-        }
-
-        Console.Clear();
-        ShowAllItemsAsCards();
-        Console.Write("\n№Товара: ");
-        if (int.TryParse(Console.ReadLine(), out int idx) && idx >= 1 && idx <= items.Count)
-        {
-            var removed = items[idx - 1];
-            items.RemoveAt(idx - 1);
-            Console.WriteLine($"Товар \"{removed.Name}\" удалён\n");
-        }
-        else
-        {
-            Console.WriteLine("Не верны1й номер\n");
-        }
-    }
-
-    static void CreateOrder()
-    {
-        if (items.Count == 0)
-        {
-            Console.WriteLine("Cписок пуст\n");
-            return;
-        }
-
-        double total = items.Sum(i => i.Price);
-        var order = new Order(new List<Item>(items), total, DateTime.Now);
-
-        Console.Clear();
-        Console.WriteLine($"Дата заказа: {order.OrderDate}" + "Товары в заказе: ");
-        foreach (var item in order.Items)
-        {
-            Console.WriteLine($"  - {item.Name} | {item.Price:F2} руб. | добавлен {item.Date.ToShortDateString()}");
-        }
-        Console.WriteLine($"К оплате: {order.TotalAmount:F2} руб\n");
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
     }
 }
