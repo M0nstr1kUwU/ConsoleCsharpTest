@@ -1712,7 +1712,10 @@ internal class Program
                 "54. StringArrayM работа с массивом (сортировка/вывод) + кол-во сборок GC\n" +
                 "55. Сортировка и сохранение случайных слов в data.txt\n" +
                 "56. Сумма всех чисел из файла с сохранением\n" +
-                "57. Шифрование файла Цезарем\n"
+                "57. Шифрование файла Цезарем\n" +
+                "58. Сохранение в файл данных и их сортировка (фильмы)\n" +
+                "59. Шифрование `Цезаря` с помощью Stream Reader/Writer\n" +
+                "60. Создание файлов и директорий\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -2009,6 +2012,18 @@ internal class Program
                 case 57:
                     fill_char('~', 30);
                     cesar_shifr_for_save_txt();
+                    continue;
+                case 58:
+                    fill_char('~', 30);
+                    data_saver_films();
+                    continue;
+                case 59:
+                    fill_char('~', 30);
+                    script_cesar_for_stream();
+                    continue;
+                case 60:
+                    fill_char('~', 30);
+                    creater_folder_stream();
                     continue;
                 case 0:
                     fill_char('~', 30);
@@ -4006,5 +4021,136 @@ internal class Program
             else result += c;
         }
         File.WriteAllText("data1.txt", result);
+    }
+
+    static void data_saver_films()
+    {
+        using (StreamWriter writer = new StreamWriter("data.txt"))
+        {
+            string inp;
+            while (true)
+            {
+                Console.Write("> ");
+                inp = Console.ReadLine() ?? "";
+                if (inp != "exit")
+                    writer.WriteLine(inp);
+                else
+                    break;
+            }
+        }
+        using (StreamReader reader = new StreamReader("data.txt")) 
+        {
+            string line;
+            List<string> text = new List<string>();
+
+            while ((line = reader.ReadLine() ?? "") != null)
+            {
+                text.Add(line);
+                Console.WriteLine(line);
+            }
+            text.Sort();
+            Console.WriteLine("Отсортированный список: ");
+            for (int i = 0; i < text.Count; i++)
+            {
+                Console.WriteLine($"{i+1}.{text[i]}");
+            }
+        }
+    }
+
+    static void script_cesar_for_stream()
+    {
+
+        using (StreamWriter writer = new StreamWriter("data.txt"))
+        {
+            string inp;
+            while (true)
+            {
+                Console.Write("> ");
+                inp = Console.ReadLine() ?? "";
+                if (inp != "exit")
+                    writer.WriteLine(inp);
+                else
+                    break;
+            }
+        }
+
+        Console.Write("Step: ");
+        int step = int.Parse(Console.ReadLine() ?? "");
+
+        List<string> lines = new List<string>();
+        using (StreamReader reader = new StreamReader("data.txt"))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+                lines.Add(line);
+        }
+
+        string text = string.Join(" ", lines);
+        string result = "";
+
+        foreach (char c in text)
+        {
+            if (char.IsLetter(c))
+            {
+                char offset = char.IsUpper(c) ? 'A' : 'a';
+                char encrypted = (char)((c - offset + step) % 26 + offset);
+                result += encrypted;
+            }
+            else
+            {
+                result += c;
+            }
+        }
+
+        Console.WriteLine("Зашифрованный текст: " + result);
+    }
+
+    static void creater_folder_stream() 
+    {
+        string test = Path.Combine(Directory.GetCurrentDirectory(), "Test");
+
+        if (Directory.Exists(test))
+        {
+            Directory.Delete(test, recursive: true);
+        }
+
+        Directory.CreateDirectory(test);
+
+        File.WriteAllText(Path.Combine(test, "file1.txt"), "zaebalo");
+        File.WriteAllText(Path.Combine(test, "file2.txt"), "govno");
+
+        string test2 = Path.Combine(test, "Tvari");
+        Directory.CreateDirectory(test2);
+
+        File.WriteAllText(Path.Combine(test2, "file3.txt"), "govno 2");
+
+        Console.WriteLine($"В папке {test}");
+        PrintNamesInFolder(test);
+    }
+
+    static void PrintNamesInFolder(string path)
+    {
+        foreach (string file in Directory.GetFiles(path))
+        {
+            Console.WriteLine(Path.GetFileName(file));
+        }
+
+        foreach (string dir in Directory.GetDirectories(path))
+        {
+            Console.WriteLine(Path.GetFileName(dir));
+            PrintNamesInFolder(dir);
+        }
+    }
+
+    static void opyat_kakyato_zadacha()
+    {
+        int[] num = { 1, 2, 3, 4, 5, 6 };
+        int[] num_res = new int[num.Length];
+        
+        for (int i = 0; i < num.Length; i++)
+        {
+            var result = num.Where(n => n < 10);
+            Console.WriteLine();
+        }
     }
 }
