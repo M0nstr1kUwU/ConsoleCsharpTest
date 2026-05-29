@@ -8,10 +8,114 @@ using System.Numerics;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
+using System.Timers;
 using static System.Net.Mime.MediaTypeNames;
 
 
 delegate double MathOp(double a, double b);
+
+public class HistogramArray
+{
+    private double[] bound;
+    private int intervals;
+    private double min, max;
+
+    public HistogramArray(double[] data, int intervals)
+    {
+        if (data == null || data.Length == 0)
+            throw new ArgumentException("Data cannot be empty");
+        this.intervals = intervals;
+        min = data.Min();
+        max = data.Max();
+        double step = (max - min) / intervals;
+        bound = new double[intervals + 1];
+        for (int i = 0; i <= intervals; i++)
+            bound[i] = min + i * step;
+        bound[intervals] = max;
+    }
+
+    public int GetIndex(double value)
+    {
+        if (value < min) return -1;
+        if (value >= max) return intervals - 1;
+        for (int i = 0; i < intervals; i++)
+            if (value >= bound[i] && value < bound[i + 1])
+                return i;
+        return intervals - 1;
+    }
+
+    public double GetDouble(double percent)
+    {
+        if (percent < 0 || percent > 1)
+            throw new ArgumentException("Процент должен быть в диапозоне от 0 до 1, понял, да?");
+        double idx = percent * intervals;
+        int low = (int)Math.Floor(idx);
+        double frac = idx - low;
+        if (low >= intervals) low = intervals - 1;
+        double left = bound[low];
+        double right = bound[low + 1];
+        return left + frac * (right - left);
+    }
+}
+
+public static class Timer
+{
+    public static void DoAfter(Action action, int seconds)
+    {
+        Task.Delay(seconds * 1000).ContinueWith(f => action());
+    }
+}
+
+public class AlarmClock
+{
+    public event Action AlarmRang;
+    private DateTime alarmTime;
+    private System.Timers.Timer timer;
+
+    public void SetAlarm(DateTime time)
+    {
+        alarmTime = time;
+        if (timer == null)
+        {
+            timer = new System.Timers.Timer(1000);
+            timer.Elapsed += OnTick;
+        }
+
+        timer.Stop();
+        timer.Start();
+    }
+
+    private void OnTick(object sender, ElapsedEventArgs e)
+    {
+        if (DateTime.Now >= alarmTime)
+        {
+            timer.Stop();
+            AlarmRang?.Invoke();
+        }
+    }
+}
+
+public static class WordSearcher
+{
+    public static bool ExistsInFiles(string word, params string[] filePaths)
+    {
+        return filePaths.Any(path => File.Exists(path) && File.ReadAllText(path).Contains(word));
+    }
+}
+
+public class Validator<T>
+{
+    private List<Predicate<T>> rules = new List<Predicate<T>>();
+
+    public void AddRule(Predicate<T> rule) => rules.Add(rule);
+
+    public bool Validate(T item)
+    {
+        foreach (var rule in rules)
+            if (!rule(item)) return false;
+        return true;
+    }
+}
 
 class PlayerDeligate
 {
@@ -1715,7 +1819,8 @@ internal class Program
                 "57. Шифрование файла Цезарем\n" +
                 "58. Сохранение в файл данных и их сортировка (фильмы)\n" +
                 "59. Шифрование `Цезаря` с помощью Stream Reader/Writer\n" +
-                "60. Создание файлов и директорий\n"
+                "60. Создание файлов и директорий\n" +
+                "61. Сортировка с помощью LINQ\n"
             );
             Console.Write("Choice: ");
             choice = Convert.ToInt32(Console.ReadLine());
@@ -2024,6 +2129,14 @@ internal class Program
                 case 60:
                     fill_char('~', 30);
                     creater_folder_stream();
+                    continue;
+                case 61:
+                    fill_char('~', 30);
+                    string[] fruits = { "яблоко", "банан", "апельсин", "груша", "виноград" };
+                    var sorted = fruits.OrderBy(f => f).ToArray();
+                    Console.WriteLine("Отсортированный массив:");
+                    foreach (var item in sorted)
+                        Console.WriteLine(item);
                     continue;
                 case 0:
                     fill_char('~', 30);
